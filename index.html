@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Paws &amp; Phases</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Amarante&family=Inter:ital,wght@1,800&family=Kanit:wght@400;500;600&family=Sniglet:wght@400;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <!-- เลย์เอาต์แนวนอน: เกม 960x600 ด้านซ้าย + แชทบอทกว้าง 330px ด้านขวา -->
+  <div id="layout">
+    <main id="app">
+      <div id="game-container"></div>
+    </main>
+
+    <!-- 1.4 Smart Pet Chatbot: แผงแชท (HTML เพื่อให้พิมพ์ภาษาไทย/ใช้ไมค์ได้) -->
+    <section id="chat-screen" class="disabled">
+      <header class="cs-head">
+        <div class="cs-avatar">
+          <img id="cs-avatar-img" alt="">
+          <span id="cs-mood">🙂</span>
+        </div>
+        <div class="cs-title">
+          <div id="cs-name">Pet Chat</div>
+          <div id="cs-sub">Start a game to chat</div>
+        </div>
+        <button id="cs-menu" class="cs-square" title="Quick phrases" aria-label="Quick phrases">
+          <svg viewBox="0 0 48 48"><rect x="8" y="10" width="32" height="7" rx="3.5" /><rect x="8" y="21" width="32" height="7" rx="3.5" /><rect x="8" y="32" width="32" height="7" rx="3.5" /></svg>
+        </button>
+      </header>
+
+      <div id="cs-log"></div>
+
+      <div id="cs-chips" class="cs-tray" hidden>
+        <button data-say="เป็นอะไรหรือเปล่า?">เป็นอะไรหรือเปล่า?</button>
+        <button data-say="อยากทำอะไร?">อยากทำอะไร?</button>
+        <button data-say="หิวไหม?">หิวไหม?</button>
+        <button data-say="ไปเล่นกัน!">ไปเล่นกัน!</button>
+        <button data-say="รักนะ">รักนะ</button>
+        <button data-say="จะโตเป็นอะไร?">จะโตเป็นอะไร?</button>
+        <button data-say="ชื่ออะไร?">ชื่ออะไร?</button>
+        <button data-say="ฝันดีนะ">ฝันดีนะ</button>
+      </div>
+      <div id="cs-emojis" class="cs-tray" hidden>
+        <button>😀</button><button>😍</button><button>🥺</button><button>😂</button>
+        <button>❤️</button><button>🍖</button><button>⚽</button><button>💤</button><button>👍</button>
+      </div>
+
+      <form id="cs-form" autocomplete="off">
+        <button id="cs-emoji" type="button" aria-label="Emoji">😁</button>
+        <input id="cs-input" type="text" placeholder="Type your message..." maxlength="120" disabled>
+        <button id="cs-mic" type="button" aria-label="Voice / Send">
+          <svg class="ic-mic" viewBox="0 0 48 48"><rect x="18" y="6" width="12" height="22" rx="6" /><path d="M11 22a13 13 0 0 0 26 0M24 35v7M17 42h14" /></svg>
+          <svg class="ic-send" viewBox="0 0 48 48"><path d="M8 24L40 10 30 40 24 27z" /></svg>
+        </button>
+      </form>
+    </section>
+  </div>
+
+  <!-- Phaser จาก CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/phaser@3.80.1/dist/phaser.min.js"></script>
+
+  <!-- ข้อมูลและระบบ AI -->
+  <script src="js/data/petData.js"></script>
+  <script src="assets/sprites/manifest.js"></script>
+  <script src="js/systems/Settings.js"></script>
+  <script src="js/systems/Sound.js"></script>
+  <script src="js/systems/HandControl.js"></script>
+  <script src="js/systems/PetState.js"></script>
+  <script src="js/systems/EmotionAI.js"></script>
+  <script src="js/systems/EvolutionAI.js"></script>
+  <script src="js/systems/CareAdvisor.js"></script>
+  <script src="js/systems/PetChatbot.js"></script>
+
+  <!-- UI และ Scenes -->
+  <script src="js/ui/Widgets.js"></script>
+  <script src="js/ui/ChatPanel.js"></script>
+  <script src="js/scenes/BootScene.js"></script>
+  <script src="js/scenes/TitleScene.js"></script>
+  <script src="js/scenes/BreedScene.js"></script>
+  <script src="js/scenes/DayScene.js"></script>
+  <script src="js/scenes/GameScene.js"></script>
+  <script src="js/scenes/ProfileScene.js"></script>
+  <script src="js/scenes/HintScene.js"></script>
+  <script src="js/scenes/MenuScene.js"></script>
+  <script src="js/scenes/SlotScene.js"></script>
+  <script src="js/scenes/EvolutionScene.js"></script>
+  <script src="js/scenes/CodexScene.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

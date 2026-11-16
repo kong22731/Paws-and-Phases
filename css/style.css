@@ -1,0 +1,435 @@
+/* ---------- โทนสีตามดีไซน์ ---------- */
+:root {
+  /* ธีมฟ้าเทอร์ควอยซ์ตามดีไซน์ Figma (ชื่อตัวแปรเดิมคงไว้ เพื่อไม่ต้องแก้ส่วนอื่น) */
+  --bg: #ffffff;
+  --olive: #20a6b5;        /* ขอบ / สีหลัก */
+  --olive-mid: #d9fbff;    /* พื้นรายการข้อความ */
+  --olive-light: #8ee8f2;  /* ฟองข้อความของสัตว์ */
+  --input: #eef6f7;
+  --mic: #20a6b5;
+  --text: #1f1f1f;
+  --gap: 16px;
+  --chat-w: 330px;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  height: 100%;
+  background: #dde8e6;
+  font-family: 'Sniglet', 'Kanit', 'Tahoma', sans-serif;
+  color: var(--text);
+}
+body { display: flex; align-items: center; justify-content: center; overflow: hidden; }
+
+/* =====================================================
+   เลย์เอาต์แนวนอน: [เกม 960x600] [แชท 330px]
+   ความสูงเกม = เต็มจอ แต่ไม่เกินพื้นที่ที่เหลือหลังหักแชท
+   ===================================================== */
+#layout {
+  --game-h: min(calc(100vh - var(--gap) * 2), calc((100vw - var(--chat-w) - var(--gap) * 3) / 1.6));
+  display: flex;
+  gap: var(--gap);
+  padding: var(--gap);
+}
+
+#app {
+  position: relative;
+  height: var(--game-h);
+  aspect-ratio: 960 / 600;
+  overflow: hidden;
+  border-radius: 20px;
+  background: var(--bg);
+  box-shadow: 0 10px 30px rgba(30, 70, 80, 0.22);
+}
+#game-container { position: absolute; inset: 0; }
+#game-container canvas { display: block; }
+
+/* ช่องกรอกชื่อ (Phaser DOM element) */
+.name-input {
+  font-family: 'Sniglet', 'Kanit', sans-serif;
+  font-size: 30px;
+  width: 347px;
+  height: 74px;
+  padding: 0 18px;
+  border: 5px solid #7a7d47;
+  border-radius: 20px;
+  text-align: center;
+  outline: none;
+  color: #1f1f1f;
+  background: #fff;
+}
+
+/* =====================================================
+   แผงแชทด้านขวา
+   ===================================================== */
+#chat-screen {
+  flex: 0 0 var(--chat-w);
+  width: var(--chat-w);
+  height: var(--game-h);
+  display: flex;
+  flex-direction: column;
+  background: var(--olive-mid);
+  border: 5px solid var(--olive);
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 10px 30px rgba(60, 60, 30, 0.22);
+}
+#chat-screen.disabled #cs-form,
+#chat-screen.disabled .cs-square { opacity: 0.5; pointer-events: none; }
+
+.cs-head {
+  flex: 0 0 auto;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg);
+}
+.cs-avatar {
+  position: relative;
+  flex: 0 0 auto;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: var(--olive);
+}
+.cs-avatar img { width: 100%; height: 100%; border-radius: 50%; object-fit: cover; display: block; }
+.cs-avatar img:not([src]) { visibility: hidden; }
+#cs-mood {
+  position: absolute;
+  right: -6px;
+  bottom: -4px;
+  font-size: 15px;
+  background: #fff;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: grid;
+  place-items: center;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+.cs-title { flex: 1 1 auto; min-width: 0; }
+#cs-name { font-size: 18px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+#cs-sub { font-size: 13px; color: #8a8350; }
+
+.cs-square {
+  flex: 0 0 auto;
+  width: 42px;
+  height: 42px;
+  border: 3px solid var(--olive);
+  border-radius: 12px;
+  background: #fff;
+  cursor: pointer;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+.cs-square svg { width: 70%; height: 70%; }
+.cs-square svg rect { fill: none; stroke: var(--olive); stroke-width: 3; }
+.cs-square:hover { filter: brightness(0.95); }
+
+#cs-log {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 14px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.msg { display: flex; align-items: flex-end; gap: 8px; max-width: 100%; }
+.msg .bubble {
+  padding: 8px 12px;
+  border-radius: 14px;
+  font-size: 15px;
+  line-height: 1.4;
+  word-wrap: break-word;
+  min-width: 36px;
+}
+.msg.pet { align-self: flex-start; max-width: 90%; }
+.msg.pet .bubble { background: var(--olive-light); border-bottom-left-radius: 4px; }
+.msg.pet img {
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: var(--olive);
+  object-fit: cover;
+}
+.msg.user { align-self: flex-end; max-width: 82%; }
+.msg.user .bubble { background: #fff; border-bottom-right-radius: 4px; }
+.msg.system {
+  align-self: center;
+  font-size: 12px;
+  color: #1c7f8b;
+  background: rgba(32, 166, 181, 0.14);
+  padding: 3px 12px;
+  border-radius: 999px;
+  text-align: center;
+}
+.msg .meta { display: block; font-size: 10px; color: #3d8f99; margin-top: 2px; }
+.msg.typing .bubble { letter-spacing: 0.2em; color: #3d8f99; }
+.msg.user .bubble { border: 2px solid var(--olive-light); }
+.cs-head { border-bottom: 3px solid var(--olive-light); }
+#cs-sub { color: #3d8f99 !important; }
+
+.cs-tray {
+  flex: 0 0 auto;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 8px 12px;
+  background: var(--bg);
+  border-top: 1px solid #dcdcd4;
+}
+.cs-tray[hidden] { display: none; }
+.cs-tray button {
+  font: inherit;
+  font-size: 13px;
+  border: 2px solid var(--olive-mid);
+  background: #fff;
+  border-radius: 999px;
+  padding: 2px 10px;
+  cursor: pointer;
+}
+#cs-emojis button { font-size: 20px; padding: 0 4px; border: none; background: transparent; }
+
+#cs-form {
+  flex: 0 0 auto;
+  background: var(--bg);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 12px;
+}
+#cs-emoji {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+  border: none;
+  background: var(--input);
+  font-size: 22px;
+  cursor: pointer;
+  padding: 0;
+}
+#cs-input {
+  flex: 1 1 auto;
+  min-width: 0;
+  height: 40px;
+  border: none;
+  border-radius: 999px;
+  background: var(--input);
+  padding: 0 14px;
+  font: inherit;
+  font-size: 15px;
+  outline: none;
+}
+#cs-input::placeholder { color: #8f8f8f; }
+#cs-mic {
+  flex: 0 0 auto;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: var(--mic);
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  padding: 0;
+}
+#cs-mic svg { width: 60%; height: 60%; }
+#cs-mic .ic-mic rect { fill: none; stroke: #fff; stroke-width: 3.5; }
+#cs-mic .ic-mic path { fill: none; stroke: #fff; stroke-width: 3.5; stroke-linecap: round; }
+#cs-mic .ic-send { display: none; }
+#cs-mic .ic-send path { fill: #fff; }
+#cs-mic.has-text .ic-mic { display: none; }
+#cs-mic.has-text .ic-send { display: block; }
+#cs-mic.listening { background: #ef6b6b; animation: pulse 1s infinite; }
+@keyframes pulse { 50% { transform: scale(1.08); } }
+#chat-screen.flash { animation: flash 0.6s; }
+@keyframes flash { 30% { box-shadow: 0 0 0 4px var(--olive); } }
+
+/* =====================================================
+   ควบคุมด้วยมือ (กล้อง): ถุงมือ + กล่องภาพกล้องใต้หัวแชท
+   ===================================================== */
+#hand-glove {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 10000;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.15s;
+  will-change: transform;
+}
+#hand-glove.show { opacity: 1; }
+#hand-glove > div {
+  position: absolute;
+  left: var(--hot-x);
+  top: var(--hot-y);
+  transform-origin: 0 0;
+  transform: scale(var(--glove-scale));
+  filter: drop-shadow(0 3px 3px rgba(0, 0, 0, 0.3));
+  transition: transform 0.08s;
+}
+#hand-glove .g-fist { display: none; }
+#hand-glove.fist .g-open, #hand-glove.pressed .g-open { display: none; }
+#hand-glove.fist .g-fist, #hand-glove.pressed .g-fist { display: block; }
+#hand-glove.pressed .g-fist, #hand-glove.pressed .g-open { transform: scale(calc(var(--glove-scale) * 0.9)); }
+/* กำลังลาก: วงเรืองแสงสีเหลืองรอบถุงมือ */
+#hand-glove.dragging .g-fist { filter: drop-shadow(0 0 6px #ffd84d) drop-shadow(0 3px 3px rgba(0, 0, 0, 0.3)); }
+/* วงชี้ค้าง (dwell): ค่อย ๆ เต็มรอบถุงมือ */
+#hand-glove > .g-ringwrap {
+  left: -40px;
+  top: -40px;
+  transform: none;
+  filter: none;
+  opacity: 0;
+  transition: opacity 0.12s;
+}
+#hand-glove.dwelling > .g-ringwrap { opacity: 1; }
+.g-ring .r-bg { fill: none; stroke: rgba(255, 255, 255, 0.75); stroke-width: 7; }
+.g-ring .r-fg { fill: none; stroke: #20a6b5; stroke-width: 7; stroke-linecap: round; }
+.hand-ripple {
+  position: fixed;
+  z-index: 9999;
+  width: 44px;
+  height: 44px;
+  margin: -22px 0 0 -22px;
+  border: 4px solid #ffd84d;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: hand-ripple 0.45s ease-out forwards;
+}
+@keyframes hand-ripple { from { transform: scale(0.3); opacity: 1; } to { transform: scale(1.4); opacity: 0; } }
+button.hand-hover { filter: brightness(0.92); outline: 3px solid #ffd84d; outline-offset: 1px; }
+
+#cam-panel {
+  flex: 0 0 auto;
+  background: var(--bg);
+  border-bottom: 3px solid var(--olive-light);
+  padding: 6px 10px 8px;
+}
+#cam-panel[hidden] { display: none; }
+.cam-bar { display: flex; align-items: center; gap: 8px; font-size: 13px; color: #1c7f8b; }
+.cam-status { flex: 1 1 auto; min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.cam-dot { width: 10px; height: 10px; border-radius: 50%; background: #c9c9c9; flex: 0 0 auto; }
+#cam-panel[data-status="tracking"] .cam-dot { background: #63b51f; box-shadow: 0 0 0 3px rgba(99, 181, 31, 0.25); }
+#cam-panel[data-status="nohand"] .cam-dot { background: #fabb1e; }
+#cam-panel[data-status="loading"] .cam-dot { background: #8ee8f2; animation: pulse 1s infinite; }
+#cam-panel[data-status="error"] .cam-dot { background: #ce2424; }
+#cam-panel[data-status="error"] .cam-status { color: #ce2424; }
+.cam-btn {
+  flex: 0 0 auto;
+  width: 28px;
+  height: 28px;
+  border: 2px solid var(--olive);
+  border-radius: 9px;
+  background: #fff;
+  color: var(--olive);
+  font-size: 14px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+.cam-box {
+  position: relative;
+  margin-top: 6px;
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  border-radius: 12px;
+  overflow: hidden;
+  background: #16343a;
+}
+.cam-box video, .cam-box canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+.cam-box video { transform: scaleX(-1); }
+/* ไอคอนท่ามือ: สว่างเมื่อระบบเห็นท่านั้น */
+.cam-gestures { display: flex; gap: 6px; margin-top: 6px; }
+.cam-gestures span {
+  flex: 1 1 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 3px;
+  padding: 2px 0;
+  font-size: 11px;
+  color: #8a8c62;
+  background: var(--input);
+  border: 2px solid transparent;
+  border-radius: 10px;
+  opacity: 0.55;
+  transition: all 0.12s;
+}
+.cam-gestures span b { font-size: 16px; font-weight: normal; }
+.cam-gestures span.on { opacity: 1; color: #1c7f8b; background: #d9fbff; border-color: var(--olive); transform: scale(1.06); }
+
+/* หน้าสอนเล่นด้วยมือ (ทับจอเกม) */
+#hand-tutorial {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(20, 50, 55, 0.45);
+}
+.ht-card {
+  position: relative;
+  width: min(78%, 460px);
+  padding: 18px 26px 16px;
+  text-align: center;
+  background: #eeefd0;
+  border: 8px solid #7a7d47;
+  border-radius: 20px;
+  color: #3f4122;
+}
+.ht-step { font-size: 13px; color: #7a7d47; }
+.ht-icon { font-size: 54px; line-height: 1.2; margin-top: 4px; }
+.ht-title { font-family: 'Amarante', 'Kanit', serif; font-size: 30px; color: #fff; -webkit-text-stroke: 1.5px #7a7d47; paint-order: stroke fill; }
+.ht-card p { margin: 6px 0 12px; font-size: 15px; line-height: 1.5; }
+.ht-card button {
+  font: inherit;
+  cursor: pointer;
+  border-radius: 16px;
+}
+.ht-try, .ht-done {
+  font-size: 22px !important;
+  padding: 8px 30px;
+  color: #fff;
+  background: #7a7d47;
+  border: 5px solid #5d5f33;
+}
+.ht-skip {
+  position: absolute;
+  top: 8px;
+  right: 10px;
+  font-size: 13px !important;
+  padding: 3px 12px;
+  color: #7a7d47;
+  background: #fff;
+  border: 2px solid #b2b579;
+}
+.ht-meter { height: 14px; margin: 0 auto 4px; width: 80%; border: 3px solid #7a7d47; border-radius: 10px; background: #fff; overflow: hidden; }
+.ht-meter i { display: block; height: 100%; width: 0; background: #20a6b5; transition: width 0.1s; }
+.ht-dots { display: flex; justify-content: center; gap: 6px; margin-top: 12px; }
+.ht-dots span { width: 9px; height: 9px; border-radius: 50%; background: #b2b579; }
+.ht-dots span.on { background: #20a6b5; transform: scale(1.25); }
+.cam-note { margin-top: 4px; font-size: 10.5px; color: #8a8c62; text-align: center; }
+#cam-panel.collapsed .cam-box, #cam-panel.collapsed .cam-note { display: none; }
+#cam-panel.collapsed .cam-eye { opacity: 0.5; }
+
+/* จอแคบ (มือถือ/แท็บเล็ตแนวตั้ง): เกมอยู่บน แชทอยู่ล่าง */
+@media (max-width: 760px) {
+  body { display: block; overflow: auto; }
+  #layout { --game-h: calc((100vw - var(--gap) * 2) / 1.6); flex-direction: column; }
+  #app { width: 100%; height: auto; }
+  #chat-screen { width: 100%; flex-basis: auto; height: 460px; }
+}

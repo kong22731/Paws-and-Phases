@@ -1,0 +1,67 @@
+﻿# แก้การลบพื้นหลังด้วยมือ สำหรับ tools/make-sprites.ps1
+# ใช้เมื่อมีช่องสีขาวที่ถูกล้อมไว้ (เช่น ระหว่างขา) ที่สคริปต์ตัดสินผิด
+#
+# รูปแบบ: <key> <remove|keep> <x> <y>
+#   key    = ชื่อร่าง เช่น dog_playful_2, cat_sleepy_4
+#   remove = บังคับลบช่องสีขาวที่จุดนี้อยู่ / keep = บังคับเก็บไว้ (เช่น ฟองหรือเมฆสีขาว)
+#   x y    = ตำแหน่งในรูปต้นฉบับ เป็นสัดส่วน 0-1 (0 0 = มุมซ้ายบน, 1 1 = มุมขวาล่าง)
+# หรือ:   <key> pockets <n>
+#   ลบทุกช่องสีขาวที่ถูกล้อมไว้ในรูปนี้ ที่ขอบมีเงาสีอ่อนไม่เกิน n% (เหมาะกับรูปที่มีเส้นพลิ้ว ๆ เยอะ เช่น สาย Sleepy)
+#
+# ดูผลได้ด้วย: powershell -ExecutionPolicy Bypass -File tools\make-sprites.ps1 -Review
+#   จะแสดงรายการช่องสีขาวขนาดใหญ่พร้อมตำแหน่ง x y ให้คัดลอกมาใส่ที่นี่
+#   แล้วเปิดรูปใน assets/sprites/review (ฟ้า = ช่องที่ลบ, เขียว = สีขาวที่เก็บไว้)
+
+# หรือ:   <key> strict
+#   ลบเฉพาะพื้นขาวล้วน (ใช้กับรูปที่มีฟอง/เมฆสีอ่อนติดขอบภาพ ซึ่งปกติจะถูกลบไปด้วย)
+
+# หรือ:   <key> keepshadow
+#   ไม่ต้องลบเงาพื้นใต้เท้า (ปกติสคริปต์จะลบเงาสีชมพู/เบจ/เทาที่ส่วนล่างของภาพออก)
+
+# ---------- สาย Sleepy: เมฆสีครีมด้านล่างไม่ใช่เงาพื้น -> ไม่ต้องลบ ----------
+dog_sleepy_2 keepshadow
+dog_sleepy_3 keepshadow
+dog_sleepy_4 keepshadow
+dog_sleepy_5 keepshadow
+cat_sleepy_2 keepshadow
+cat_sleepy_3 keepshadow
+cat_sleepy_4 keepshadow
+cat_sleepy_5 keepshadow
+
+# ---------- Neglect dog 2: ช่องว่างระหว่างขาหน้า ----------
+dog_neglect_2 remove 0.427 0.717
+
+# ---------- Playful cat 4: ช่องระหว่างขา และระหว่างสายรัดข้อมือกับตัว ----------
+cat_playful_4 remove 0.438 0.697
+cat_playful_4 remove 0.592 0.533
+
+# ---------- Self-Care dog 4-5: ฟองสบู่บนหัวและข้างตัวถูกลบ -> ใช้โหมด strict ----------
+dog_selfcare_4 strict
+dog_selfcare_5 strict
+
+# ---------- สาย Sleepy: ช่องระหว่างเส้นพลิ้ว / ในวงแสง ----------
+dog_sleepy_4 pockets 30
+dog_sleepy_5 pockets 36
+cat_sleepy_4 pockets 32
+cat_sleepy_5 pockets 32
+dog_sleepy_4 remove 0.148 0.505
+dog_sleepy_4 remove 0.943 0.755
+dog_sleepy_5 remove 0.315 0.363
+dog_sleepy_5 remove 0.850 0.600
+dog_sleepy_5 remove 0.368 0.612
+dog_sleepy_5 remove 0.103 0.750
+dog_sleepy_5 remove 0.887 0.502
+cat_sleepy_5 remove 0.243 0.392
+
+# ---------- ช่องระหว่างชุด/ปีก/หาง ที่เส้นขอบเป็นสี (ไม่ใช่สีเข้ม) ----------
+dog_royal_4 remove 0.597 0.494
+cat_royal_5 remove 0.764 0.655
+cat_selfcare_4 remove 0.671 0.560
+
+# ---------- Playful cat 5: ในสายฟ้า ระหว่างขากับก้อนหิน ----------
+cat_playful_5 remove 0.474 0.010
+cat_playful_5 remove 0.151 0.053
+cat_playful_5 remove 0.835 0.583
+cat_playful_5 remove 0.432 0.743
+cat_playful_5 remove 0.932 0.764
+cat_playful_5 remove 0.551 0.882
