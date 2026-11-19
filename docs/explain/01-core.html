@@ -1,0 +1,234 @@
+<!-- ===================== ภาค 1: โครงสร้างหลัก ===================== -->
+<section class="part">
+<h1 class="part-title"><span>ภาค 1</span>โครงสร้างหลักของเกม</h1>
+<p>ภาคนี้อธิบายไฟล์ที่ทำให้เกม "เปิดขึ้นมาได้" ได้แก่ หน้าเว็บ <code>index.html</code>, ตัวเริ่ม Phaser <code>main.js</code>, ข้อมูลตั้งค่า <code>petData.js</code>, การตั้งค่าผู้เล่น <code>Settings.js</code>, ระบบเสียง <code>Sound.js</code> และเซิร์ฟเวอร์สำหรับรันในเครื่อง <code>serve.ps1</code></p>
+
+<h2 class="file">index.html <small>หน้าเว็บหลัก · 94 บรรทัด</small></h2>
+<p>ไฟล์แรกที่เบราว์เซอร์เปิด ทำหน้าที่ 3 อย่าง คือ (1) วางโครงหน้าจอ (2) สร้างแผงแชทด้วย HTML และ (3) โหลดสคริปต์ทุกไฟล์ตามลำดับ</p>
+
+<h3>ส่วน &lt;head&gt;</h3>
+<ul>
+  <li><code>&lt;meta charset="utf-8"&gt;</code> บอกเบราว์เซอร์ว่าไฟล์ใช้รหัส UTF-8 จึงแสดงภาษาไทยและอีโมจิได้ถูกต้อง</li>
+  <li><code>&lt;meta name="viewport" ...&gt;</code> ให้หน้าเว็บกว้างเท่าจอจริงบนมือถือ/แท็บเล็ต ไม่ย่อเป็นหน้าเดสก์ท็อป</li>
+  <li><code>&lt;title&gt;Paws &amp;amp; Phases&lt;/title&gt;</code> ชื่อที่ขึ้นบนแท็บเบราว์เซอร์ (<code>&amp;amp;</code> คือวิธีเขียนเครื่องหมาย &amp; ใน HTML)</li>
+  <li><code>preconnect</code> 2 บรรทัด สั่งให้เบราว์เซอร์เปิดการเชื่อมต่อกับเซิร์ฟเวอร์ Google Fonts ล่วงหน้า ฟอนต์จะโหลดเร็วขึ้น</li>
+  <li>ลิงก์ <code>fonts.googleapis.com/css2?family=...</code> โหลดฟอนต์ 4 ตระกูล: <b>Amarante</b> (หัวข้อ), <b>Inter</b> ตัวเอียงหนา (ตัวเลข), <b>Kanit</b> (ภาษาไทย) และ <b>Sniglet</b> (ตัวหนังสือหลักของเกม)</li>
+  <li><code>css/style.css</code> ไฟล์ตกแต่งหน้าตา (อธิบายในภาค 5)</li>
+</ul>
+
+<h3>ส่วน &lt;body&gt;: โครงหน้าจอ</h3>
+<ul>
+  <li><code>#layout</code> กล่องนอกสุด จัดวางแนวนอน: ซ้ายเป็นเกม ขวาเป็นแชท</li>
+  <li><code>&lt;main id="app"&gt;</code> พื้นที่ฝั่งเกม ข้างในมี <code>#game-container</code> ซึ่ง Phaser จะสร้าง <code>&lt;canvas&gt;</code> ไว้ตรงนี้</li>
+  <li><code>&lt;section id="chat-screen" class="disabled"&gt;</code> แผงแชทบอท เริ่มต้นมีคลาส <code>disabled</code> (จางและกดไม่ได้) จนกว่าจะเริ่มเลี้ยงสัตว์ แผงนี้ทำด้วย HTML ไม่ใช่ใน canvas เพราะต้องพิมพ์ภาษาไทย ใช้ IME และใช้ไมโครโฟนได้</li>
+</ul>
+
+<h3>ส่วนประกอบของแผงแชท</h3>
+<table>
+<tr><th>id / class</th><th>หน้าที่</th></tr>
+<tr><td><code>.cs-head</code></td><td>แถบหัว: รูปสัตว์ <code>#cs-avatar-img</code>, อีโมจิอารมณ์ <code>#cs-mood</code>, ชื่อ <code>#cs-name</code>, ข้อความย่อย <code>#cs-sub</code></td></tr>
+<tr><td><code>#cs-menu</code></td><td>ปุ่มสามขีด (วาดด้วย SVG สี่เหลี่ยมมุมมน 3 แท่ง) กดแล้วเปิด/ปิดถาดประโยคสำเร็จรูป</td></tr>
+<tr><td><code>#cs-log</code></td><td>พื้นที่แสดงข้อความแชททั้งหมด เลื่อนขึ้นลงได้</td></tr>
+<tr><td><code>#cs-chips</code></td><td>ถาดประโยคสำเร็จรูป 8 ปุ่ม แต่ละปุ่มมี <code>data-say</code> = ข้อความที่จะส่งเมื่อกด เริ่มต้นซ่อน (<code>hidden</code>)</td></tr>
+<tr><td><code>#cs-emojis</code></td><td>ถาดอีโมจิ 9 ตัว กดแล้วแทรกลงช่องพิมพ์</td></tr>
+<tr><td><code>#cs-form</code></td><td>แบบฟอร์มพิมพ์ข้อความ <code>autocomplete="off"</code> ปิดการเดาคำของเบราว์เซอร์</td></tr>
+<tr><td><code>#cs-input</code></td><td>ช่องพิมพ์ จำกัด 120 ตัวอักษร (<code>maxlength</code>) เริ่มต้น <code>disabled</code></td></tr>
+<tr><td><code>#cs-mic</code></td><td>ปุ่มเดียวที่สลับ 2 ไอคอน: ถ้าช่องพิมพ์ว่างเป็นไมโครโฟน (<code>.ic-mic</code>) ถ้ามีข้อความเป็นปุ่มส่ง (<code>.ic-send</code>)</td></tr>
+</table>
+
+<h3>ลำดับการโหลดสคริปต์</h3>
+<p>สคริปต์ทั้งหมดเป็น <code>&lt;script&gt;</code> ธรรมดา (ไม่ใช่ module) จึงทำงานตามลำดับบนลงล่าง ไฟล์หลังใช้ของที่ไฟล์ก่อนสร้างไว้ได้ ทุกไฟล์ฝากของไว้ในตัวแปรกลางชื่อ <code>window.PetGame</code></p>
+<ol>
+  <li><b>Phaser 3.80.1</b> จาก CDN jsdelivr: เอนจินเกม สร้างตัวแปร <code>Phaser</code></li>
+  <li><b>ข้อมูล:</b> <code>petData.js</code> → <code>manifest.js</code> (รายชื่อภาพตัวละคร)</li>
+  <li><b>ระบบ:</b> Settings → Sound → HandControl → PetState → EmotionAI → EvolutionAI → CareAdvisor → PetChatbot</li>
+  <li><b>UI:</b> Widgets (ปุ่ม/กล่องสำเร็จรูป) → ChatPanel (แผงแชท)</li>
+  <li><b>ฉาก (Scene):</b> Boot, Title, Breed, Day, Game, Profile, Hint, Menu, Slot, Evolution, Codex</li>
+  <li><b>main.js</b> ต้องอยู่ท้ายสุด เพราะต้องรู้จักทุกคลาสก่อนสั่งเริ่มเกม</li>
+</ol>
+
+<h2 class="file">js/main.js <small>จุดเริ่มเกม · 27 บรรทัด</small></h2>
+<pre>window.PetGame = window.PetGame || {};
+PetGame.speed = 1;</pre>
+<p>บรรทัดแรกเป็นรูปแบบที่ทุกไฟล์ใช้: ถ้ายังไม่มี <code>PetGame</code> ให้สร้างเป็นออบเจ็กต์ว่าง ถ้ามีแล้วใช้ตัวเดิม จากนั้นตั้งความเร็วเวลาในเกมเริ่มต้นเป็น x1 (ผู้เล่นเปลี่ยนเป็น x2, x5, x10 ได้ในเมนู)</p>
+
+<h3>ฟังก์ชัน <code>start()</code></h3>
+<p>เขียนแบบ <code>(function start() { ... })();</code> คือประกาศแล้วเรียกทันที (IIFE) ตัวแปรข้างในจึงไม่รั่วออกไปเป็นตัวแปรกลาง</p>
+<h4><code>boot()</code> สร้างเกม</h4>
+<ol>
+  <li><code>if (PetGame.game) return;</code> กันการสร้างเกมซ้ำ (boot อาจถูกเรียก 2 ครั้ง ดูด้านล่าง)</li>
+  <li><code>PetGame.chat = new PetGame.ChatPanel();</code> สร้างตัวควบคุมแผงแชทก่อน เพราะฉากต่างๆ จะเรียกใช้</li>
+  <li><code>new Phaser.Game({...})</code> สร้างเกม โดยตั้งค่า:
+    <ul>
+      <li><code>type: Phaser.AUTO</code> ใช้ WebGL ถ้าเครื่องรองรับ ไม่งั้นใช้ Canvas</li>
+      <li><code>parent: 'game-container'</code> วาง canvas ในกล่องนี้</li>
+      <li><code>width/height</code> = 960×600 จาก <code>PetGame.Data</code></li>
+      <li><code>dom: { createContainer: true }</code> เปิดให้วางกล่อง HTML ซ้อนบนเกมได้ (ใช้กับช่องพิมพ์ชื่อสัตว์ในหน้า Breed)</li>
+      <li><code>scale: { mode: FIT }</code> ย่อ/ขยายเกมให้พอดีพื้นที่โดยคงสัดส่วน 16:10</li>
+      <li><code>scene: [...]</code> รายชื่อฉากทั้งหมด ฉากแรกในรายการ (<code>BootScene</code>) จะเริ่มอัตโนมัติ</li>
+    </ul>
+  </li>
+</ol>
+<h4>รอฟอนต์ก่อนเริ่ม</h4>
+<p>ข้อความใน canvas ถูก "วาด" ครั้งเดียวตอนสร้าง ถ้าฟอนต์ยังโหลดไม่เสร็จ ตัวหนังสือจะออกมาเป็นฟอนต์สำรองและไม่เปลี่ยนตามทีหลัง โค้ดจึงรอก่อน:</p>
+<ul>
+  <li><code>document.fonts.load(f)</code> สั่งโหลดฟอนต์แต่ละแบบ (Kanit 3 น้ำหนัก, Sniglet ปกติ/หนา, Amarante, Inter เอียงหนา) ได้ Promise กลับมา</li>
+  <li><code>Promise.all</code> รอจนครบทุกฟอนต์ ถ้าเบราว์เซอร์ไม่มี <code>document.fonts</code> ก็ข้ามไป (<code>Promise.resolve()</code>)</li>
+  <li><code>Promise.race([fontReady, รอ 2 วินาที])</code> แข่งกันว่าอะไรเสร็จก่อน: ถ้าเน็ตช้าจะไม่รอเกิน 2 วินาที</li>
+  <li><code>.then(boot, boot)</code> ไม่ว่าสำเร็จหรือผิดพลาดก็เรียก <code>boot</code> เกมจึงเปิดได้เสมอ</li>
+</ul>
+
+<h2 class="file">js/data/petData.js <small>ข้อมูลตั้งค่าเกมทั้งหมด · 274 บรรทัด</small></h2>
+<p>ไฟล์นี้ไม่มีตรรกะการทำงาน เป็น "ตารางตัวเลขและข้อความ" ทั้งหมดของเกม รวมอยู่ใน <code>PetGame.Data</code> ถ้าจะปรับความยากหรือแก้ชื่อร่าง แก้ที่นี่ที่เดียว</p>
+
+<table>
+<tr><th>ค่า</th><th>ความหมาย</th></tr>
+<tr><td><code>WIDTH, HEIGHT</code></td><td>ขนาดจอเกม 960×600 พิกเซล (แนวนอน 16:10)</td></tr>
+<tr><td><code>COLORS</code></td><td>ชุดสีตามดีไซน์ Figma แต่ละสีมี 2 แบบ: ตัวเลขฐาน 16 เช่น <code>0x20a6b5</code> ใช้วาดรูปทรงใน Phaser และสตริง CSS เช่น <code>'#20a6b5'</code> ใช้กับตัวหนังสือ กลุ่มหลักคือ teal (ฟ้า: หน้าเลี้ยง), olive (เขียวมะกอก: ปุ่ม/หนังสือ), bond (ม่วงชมพู: แถบความผูกพัน) และ stat High/Mid/Low (เขียว/เหลือง/แดง)</td></tr>
+<tr><td><code>FONT, TITLE_FONT</code></td><td>ชื่อฟอนต์ที่ใช้ ต่อท้ายด้วย Kanit เพราะ Sniglet/Amarante ไม่มีอักษรไทย เบราว์เซอร์จะใช้ Kanit แทนเฉพาะตัวไทย</td></tr>
+<tr><td><code>ASSET_FILES</code></td><td>ไฟล์พื้นหลัง: <code>bg_park</code> สวน (หน้าเลี้ยง), <code>bg_choose</code> ทุ่งดอกไม้ (หน้าเลือกสัตว์) ส่วน <code>cover: null</code> ยังไม่มีภาพปก</td></tr>
+<tr><td><code>UI_ICONS / UI_IMAGES / COVER_IMAGES</code></td><td>รายชื่อไฟล์ไอคอนและภาพ BootScene วนลูปโหลดตามรายการนี้</td></tr>
+<tr><td><code>SPRITE_DIR</code></td><td>โฟลเดอร์ภาพตัวละคร <code>assets/sprites</code></td></tr>
+<tr><td><code>STATS</code></td><td>ค่าสถานะ 4 ตัว: fullness (อิ่ม), happiness (สุข), health (สะอาด/สุขภาพ), energy (พลัง) ทุกตัวมีค่า 0–100</td></tr>
+<tr><td><code>STAT_INFO</code></td><td>ป้ายชื่อ อีโมจิ ชื่อไอคอน และสีของแต่ละค่า เช่น health แสดงเป็น "Clean" ไอคอนอ่างอาบน้ำ</td></tr>
+<tr><td><code>STAT_ORDER</code></td><td>ลำดับกล่องค่าสถานะบนจอ (บนลงล่าง)</td></tr>
+</table>
+
+<h3><code>DECAY</code>: ค่าที่ลดลงตามเวลา</h3>
+<p>หน่วยเป็น "แต้มต่อวินาที" ที่ความเร็ว x1 เช่น fullness 0.20 แปลว่าทุก 5 วินาทีหิวขึ้น 1 แต้ม (100 แต้มหมดใน ~8 นาที)</p>
+<ul>
+  <li><code>hungryHealthPenalty 0.15</code> ถ้าหิวมาก (fullness ต่ำ) สุขภาพลดเพิ่มอีก 0.15/วินาที</li>
+  <li><code>lonelyHappinessPenalty 0.10</code> + <code>lonelyAfter 60</code> ถ้าไม่ได้ยุ่งกับสัตว์เกิน 60 วินาที ความสุขลดเพิ่ม</li>
+  <li><code>sleepEnergyGain 0.8</code> ตอนหลับพลังเพิ่ม 0.8/วินาที</li>
+  <li><code>sleepFullnessDecay 0.10</code> ตอนหลับหิวช้าลงเหลือ 0.10/วินาที</li>
+</ul>
+
+<h3><code>CATEGORIES</code> และ <code>ITEMS</code>: เมนู Grooming</h3>
+<p>มี 4 หมวด <b>feed / play / care / rest</b> แต่ละหมวดกำหนดสีพื้น สีขอบ สีตัวหนังสือของการ์ดตามดีไซน์ ส่วน <code>ITEMS</code> คือไอเทมในแต่ละหมวด ทุกชิ้นมี:</p>
+<ul>
+  <li><code>key</code> ชื่อภายในโค้ด, <code>label</code> ชื่อที่แสดง, <code>file</code> ชื่อไฟล์ภาพ</li>
+  <li><code>fx</code> ผลต่อค่าสถานะ เช่น Tennis Ball <code>{ happiness: 25, energy: -15, fullness: -6 }</code> = สุข +25, เหนื่อย −15, หิวขึ้น 6</li>
+  <li>หมวด rest มีแค่ 2 ปุ่มและ <code>fx</code> ว่าง: Nap (งีบ <code>NAP_SECONDS</code> = 30 วินาที) และ Sleep (หลับจนกว่าจะกดปลุก)</li>
+</ul>
+<table>
+<tr><th>ค่า</th><th>ความหมาย</th></tr>
+<tr><td><code>CARE_STAT</code></td><td>จับคู่หมวดกับค่าสถานะ (feed→fullness, play→happiness, care→health, rest→energy) ใช้วัดว่าสัตว์ "ต้องการ" อะไร</td></tr>
+<tr><td><code>CARE_TARGET</code></td><td>ไอเทมที่จะไฮไลต์เมื่อ AI แนะนำหมวดนั้น เช่นแนะนำให้กิน → ไฮไลต์ Pet Food</td></tr>
+<tr><td><code>HINT_FROM_STAGE: 3</code></td><td>ปุ่มหลอดไฟ Hint ขึ้นเมื่อถึงร่างที่ 3</td></tr>
+<tr><td><code>ACTION_COOLDOWN_MS: 1000</code></td><td>ต้องเว้น 1 วินาทีระหว่างการใช้ไอเทม กันกดรัว</td></tr>
+<tr><td><code>MAX_STAGE: 5</code></td><td>ร่างสูงสุด</td></tr>
+<tr><td><code>REGRESS_AFTER</code></td><td>ต้องพลาดเป้าติดกันกี่วันถึงลดร่าง: ร่าง 2 และ 3 = 2 วัน, ร่าง 4 = 3 วัน</td></tr>
+<tr><td><code>get DAY_SECONDS()</code></td><td><b>getter</b> = คำนวณใหม่ทุกครั้งที่อ่าน: นาทีต่อวันจากการตั้งค่า × 60 ถ้ายังไม่มีการตั้งค่าใช้ 3 นาที</td></tr>
+<tr><td><code>SOUND_FILES, MUSIC_VOLUME, SFX_VOLUME</code></td><td>ไฟล์เพลงพื้นหลัง และความดังเพลง (0.1) กับเอฟเฟกต์ (0.6)</td></tr>
+<tr><td><code>SPEEDS</code></td><td>ตัวเลือกเร่งเวลา [1, 2, 5, 10]</td></tr>
+<tr><td><code>REST_PER_SEC: 0.06</code></td><td>แต้มพฤติกรรม "พักผ่อน" ที่ได้ต่อวินาทีระหว่างหลับ</td></tr>
+<tr><td><code>SOCIAL_PER_CHAT: 3</code></td><td>คุย 1 ครั้ง ค่า Social (แถบชมพู) +3</td></tr>
+<tr><td><code>SOCIAL_DAILY_DECAY: 8</code></td><td>ทั้งวันไม่คุยเลย Social −8 ตอนขึ้นวันใหม่</td></tr>
+<tr><td><code>STAGE_LABELS</code></td><td>ชื่อขั้น: Starter, Junior, Teen, Adult, Ultimate</td></tr>
+</table>
+
+<h3><code>LINES</code>: สายวิวัฒนาการ 7 สาย</h3>
+<p>ลำดับในออบเจ็กต์ = ลำดับแถวใน Evolution Book แต่ละสายมี label, icon, สี (ตัวเลขและ CSS) และคำอธิบายสั้น สาย <b>leader</b> มี <code>hidden: true</code> = ซ่อนชื่อจนกว่าจะปลดล็อก</p>
+<table>
+<tr><th>สาย</th><th>เงื่อนไขโดยย่อ</th></tr>
+<tr><td>sleepy 💤</td><td>นอนและพักมากที่สุด</td></tr>
+<tr><td>gluttony 🐷</td><td>กินมากที่สุด</td></tr>
+<tr><td>neglect 👽</td><td>ปล่อยให้หิว สกปรก และเหงา</td></tr>
+<tr><td>selfcare 🧼</td><td>อาบน้ำ/ดูแลความสะอาดมากที่สุด</td></tr>
+<tr><td>playful 🏋️</td><td>เล่นและออกกำลังมากที่สุด</td></tr>
+<tr><td>royal 👑</td><td>ดูแลสมดุลทุกด้าน</td></tr>
+<tr><td>leader 🎩</td><td>สมดุลทุกด้าน + คุยเยอะ (สายลับ)</td></tr>
+</table>
+
+<h3><code>FORM_NAMES</code>, <code>BABY_DESC</code>, <code>LINE_GUIDE</code></h3>
+<ul>
+  <li><code>FORM_NAMES</code> เขียนเป็นฟังก์ชันเรียกทันที เพื่อสร้างตารางชื่อร่าง 5 ขั้นของแต่ละสายเพียงชุดเดียว แล้วให้ทั้ง <code>dog</code> และ <code>cat</code> ชี้ไปที่ชุดเดียวกัน (หมาแมวใช้ชื่อร่างเหมือนกัน)</li>
+  <li><code>BABY_DESC</code> คำบรรยายร่างแรก</li>
+  <li><code>LINE_GUIDE</code> ของแต่ละสายมี <code>tip</code> (คำแนะนำในหน้า Hint), <code>targets</code> (ระดับค่าสถานะเป้าหมาย 0–100 ที่ Hint วาดเป็นแถบ), <code>forms</code> (คำบรรยายร่าง 2–5 ใน Evolution Book) และสาย leader มี <code>social: true</code> = ต้องคุยเยอะ</li>
+  <li><code>LEGACY_LINES</code> แปลงชื่อสายจากเซฟรุ่นเก่า (beauty→selfcare, strong→gluttony, balanced→royal) เพื่อให้เซฟเก่ายังเปิดได้</li>
+</ul>
+
+<h2 class="file">js/systems/Settings.js <small>การตั้งค่าผู้เล่น · 30 บรรทัด</small></h2>
+<p>เก็บการตั้งค่าที่ไม่ผูกกับสัตว์ตัวใด (ความยาววัน เสียง การควบคุมด้วยมือ) ไว้ใน localStorage ของเบราว์เซอร์ คีย์ <code>lovelyPetEvolutions.settings</code> แยกจากไฟล์เซฟสัตว์</p>
+<ol>
+  <li><code>DEFAULTS</code> ค่าเริ่มต้น: dayMinutes 3, music true, sfx true, handSensitivity 'normal', dwell true, handTutorialDone false</li>
+  <li><code>DAY_OPTIONS = [3, 5, 7, 10]</code> ความยาววันที่เลือกได้ (นาที)</li>
+  <li><code>let s = Object.assign({}, DEFAULTS);</code> คัดลอกค่าเริ่มต้นมาเป็นชุดที่ใช้งาน</li>
+  <li><code>JSON.parse(localStorage.getItem(KEY) || '{}')</code> อ่านค่าที่เคยบันทึก (ถ้าไม่มีใช้ <code>'{}'</code>) แล้ว <code>Object.assign</code> ทับลงไป ค่าที่ไม่เคยบันทึกจึงยังเป็นค่าเริ่มต้น ครอบด้วย <code>try/catch</code> กันข้อมูลเสียทำให้เกมพัง</li>
+  <li>ถ้า dayMinutes ที่อ่านได้ไม่อยู่ในตัวเลือก ให้กลับเป็นค่าเริ่มต้น</li>
+  <li><code>PetGame.settings = s</code> ให้ไฟล์อื่นอ่านค่าได้โดยตรง เช่น <code>PetGame.settings.sfx</code></li>
+</ol>
+<h3>เมธอดใน <code>PetGame.Settings</code></h3>
+<table>
+<tr><th>เมธอด</th><th>การทำงาน</th></tr>
+<tr><td><code>save()</code></td><td>แปลง <code>s</code> เป็นข้อความ JSON แล้วเขียนลง localStorage</td></tr>
+<tr><td><code>set(key, value)</code></td><td>เปลี่ยนค่าหนึ่งตัวแล้วบันทึกทันที</td></tr>
+<tr><td><code>nextDayLength()</code></td><td>หาตำแหน่งค่าปัจจุบันใน DAY_OPTIONS แล้วขยับไปตัวถัดไป ใช้ <code>% length</code> ให้วนกลับต้น (10 → 3) บันทึกแล้วคืนค่าใหม่</td></tr>
+</table>
+
+<h2 class="file">js/systems/Sound.js <small>เพลงและเสียงเอฟเฟกต์ · 115 บรรทัด</small></h2>
+<p>เพลงพื้นหลังมาจากไฟล์ mp3 ส่วนเสียงเอฟเฟกต์ <b>ไม่ได้ใช้ไฟล์เสียง</b> แต่สังเคราะห์ด้วย Web Audio API ทั้งหมด (สร้างคลื่นเสียงด้วยโค้ด)</p>
+<p><code>ctx()</code> คืน AudioContext ของ Phaser (<code>PetGame.game.sound.context</code>) ถ้าเกมยังไม่สร้างจะได้ค่าว่าง ทุกฟังก์ชันจึงเช็กก่อน</p>
+
+<h3><code>tone(freq, dur, o)</code>: เสียงโน้ตเดียว</h3>
+<ol>
+  <li>รวมตัวเลือกกับค่าเริ่มต้น: รูปคลื่น <code>sine</code>, ความดัง 0.5, หน่วงเวลา 0, ไม่เลื่อนเสียง</li>
+  <li><code>t0 = currentTime + at</code> เวลาเริ่มเล่น (หน่วงได้ เพื่อเรียงโน้ตเป็นทำนอง)</li>
+  <li><code>createOscillator()</code> ตัวกำเนิดคลื่นเสียง และ <code>createGain()</code> ตัวปรับความดัง</li>
+  <li>ตั้งความถี่ (Hz) ถ้ามี <code>to</code> ใช้ <code>exponentialRampToValueAtTime</code> ไล่ความถี่ไปถึงค่าใหม่ เกิดเสียง "วู้ป" ขึ้นหรือลง</li>
+  <li>ทำซองเสียง (envelope): เริ่มเงียบ 0.0001 → ดังเต็มใน 0.012 วินาที → ค่อยๆ เบาจนเงียบเมื่อจบ ป้องกันเสียงคลิก (ใช้ 0.0001 แทน 0 เพราะการไล่แบบ exponential ไปถึง 0 ไม่ได้)</li>
+  <li>ต่อสาย oscillator → gain → ลำโพง (<code>destination</code>) แล้ว start/stop ตามเวลา</li>
+</ol>
+<h3><code>noise(dur, o)</code>: เสียงซ่า</h3>
+<ol>
+  <li>สร้างบัฟเฟอร์เสียงยาว <code>dur</code> วินาที แล้วเติมค่าสุ่มระหว่าง −1 ถึง 1 ทุกตัวอย่าง = เสียงรบกวนขาว (white noise)</li>
+  <li>ผ่านตัวกรอง <code>bandpass</code> ให้เหลือเฉพาะช่วงความถี่รอบ <code>freq</code> เช่น 3500 Hz ได้เสียงฟองซ่าๆ, 900 Hz ได้เสียงเคี้ยว</li>
+  <li>ความดังเริ่มที่ระดับเต็มแล้วจางลงจนเงียบ</li>
+</ol>
+<p><code>notes(list, gap, o)</code> เล่นโน้ตหลายตัวต่อกัน แต่ละตัวห่างกัน <code>gap</code> วินาที ใช้สร้างทำนองสั้น</p>
+
+<h3><code>EFFECTS</code>: เสียงทั้ง 20 แบบ</h3>
+<table>
+<tr><th>ชื่อ</th><th>เสียงที่ได้</th></tr>
+<tr><td>click</td><td>คลื่นสามเหลี่ยม 700→950 Hz สั้น 0.07 วินาที "ติ๊ก"</td></tr>
+<tr><td>select / open / close</td><td>2 โน้ตขึ้น (เลือก/เปิด) หรือลง (ปิด)</td></tr>
+<tr><td>error</td><td>คลื่นสี่เหลี่ยมเสียงต่ำ 2 โน้ตลง "บื้อ"</td></tr>
+<tr><td>eat</td><td>3 จังหวะ แต่ละจังหวะเป็นเสียงต่ำ + เสียงซ่าสั้น = เคี้ยว</td></tr>
+<tr><td>play</td><td>เสียงไล่ขึ้น 300→760 แล้วลง = เด้ง</td></tr>
+<tr><td>care</td><td>โน้ตสูงสุ่ม 6 ตัว + เสียงซ่าเบา = ฟองสบู่</td></tr>
+<tr><td>sleep / wake</td><td>ทำนองลง 3 โน้ต / ขึ้น 4 โน้ต</td></tr>
+<tr><td>pat, send, chat, toggle</td><td>เสียงสั้นสำหรับลูบหัว ส่งข้อความ ข้อความเข้า และสวิตช์</td></tr>
+<tr><td>evolve</td><td>ทำนองขึ้น 5 โน้ต + ประกายวิ้งสุ่ม 8 ตัว</td></tr>
+<tr><td>charge</td><td>เสียงไล่ขึ้นยาว 1.6 วินาที (ระหว่างแสงวิวัฒนาการ)</td></tr>
+<tr><td>regress, day, dayEnd</td><td>ทำนองลดร่าง / เริ่มวัน / หมดวัน</td></tr>
+</table>
+
+<h3>ออบเจ็กต์ <code>Sound</code></h3>
+<ul>
+  <li><code>play(name)</code> ไม่เล่นถ้าปิดเสียงเอฟเฟกต์ หรือไม่มีชื่อนี้ หรือ AudioContext ยังไม่ <code>running</code> (เบราว์เซอร์ห้ามเล่นเสียงก่อนผู้ใช้คลิกครั้งแรก) ครอบ <code>try/catch</code> ไว้</li>
+  <li><code>startMusic(scene)</code> เริ่มเพลงครั้งเดียว (ถ้า <code>this.music</code> มีแล้วไม่สร้างซ้ำ) เล่นวน <code>loop: true</code> ถ้าเสียงยังถูกล็อก รอ event <code>'unlocked'</code> ก่อน</li>
+  <li><code>stopMusic()</code> หยุดและทำลายเพลง</li>
+  <li><code>setMusic(on, scene)</code> / <code>setSfx(on)</code> บันทึกการตั้งค่าแล้วเปิด/ปิดตาม</li>
+</ul>
+<h3>หยุดเพลงเมื่อออกจากเกม</h3>
+<p>ดักเหตุการณ์ของหน้าเว็บ 4 อย่าง: <code>visibilitychange</code> (สลับแท็บ/ย่อหน้าต่าง), <code>blur</code> (ไปหน้าต่างอื่น), <code>focus</code> (กลับมา) และ <code>pagehide</code> (ปิดหน้า) ตอนออกเรียก <code>pause()</code> ตอนกลับเรียก <code>resume()</code> ซึ่งจะเล่นต่อก็ต่อเมื่อเพลงถูกพักอยู่ เปิดเพลงในการตั้งค่า และหน้าเว็บมองเห็นอยู่</p>
+
+<h2 class="file">serve.ps1 <small>เซิร์ฟเวอร์สำหรับรันในเครื่อง · 45 บรรทัด</small></h2>
+<p>เปิดไฟล์ <code>index.html</code> ตรงๆ (file://) แล้วกล้องและบางฟีเจอร์จะใช้ไม่ได้ สคริปต์ PowerShell นี้จึงทำเว็บเซิร์ฟเวอร์เล็กๆ ที่ <code>http://localhost:8080</code> โดยไม่ต้องติดตั้งอะไรเพิ่ม</p>
+<ol>
+  <li><code>param([int]$Port = 8080, [switch]$Open)</code> รับพอร์ต และสวิตช์ <code>-Open</code> เพื่อเปิดเบราว์เซอร์ให้อัตโนมัติ</li>
+  <li><code>$root</code> = โฟลเดอร์ที่สคริปต์อยู่ = โฟลเดอร์เกม</li>
+  <li>สร้าง <code>HttpListener</code> ฟังที่ <code>http://localhost:พอร์ต/</code> แล้ว <code>Start()</code></li>
+  <li><code>$mime</code> ตารางนามสกุล → ชนิดไฟล์ บอกเบราว์เซอร์ว่าเป็น html/js/รูป/เสียง</li>
+  <li>วนลูปรอคำขอ (<code>GetContext()</code> หยุดรอจนมีคนขอ):
+    <ul>
+      <li>แปลง path ใน URL เป็นชื่อไฟล์ (ถอดรหัส %20 เป็นเว้นวรรค) ถ้าว่างให้เป็น index.html</li>
+      <li><code>GetFullPath</code> + <code>StartsWith($root)</code> ป้องกันการขอไฟล์นอกโฟลเดอร์เกม (เช่น <code>../../</code>)</li>
+      <li>ถ้าเจอไฟล์: อ่านเป็นไบต์ ตั้งชนิดไฟล์ ใส่ <code>Cache-Control: no-cache</code> (แก้โค้ดแล้วรีเฟรชเห็นทันที) แล้วส่งกลับ</li>
+      <li>ถ้าไม่เจอ: ตอบ 404</li>
+      <li><code>finally</code> ปิดการตอบทุกครั้ง แม้เกิดข้อผิดพลาด</li>
+    </ul>
+  </li>
+  <li>เมื่อหยุดสคริปต์ (Ctrl+C) <code>finally</code> นอกสุดสั่ง <code>$listener.Stop()</code></li>
+</ol>
+</section>

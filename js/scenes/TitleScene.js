@@ -113,7 +113,7 @@ class TitleScene extends Phaser.Scene {
       this.toast('Starting camera… please allow camera access');
       Hand.start().then((ok) => {
         if (!this.sys.isActive()) return;
-        if (ok) this.toast('Hand control ON — pinch 🤏 to tap!');
+        if (ok) this.toast('Hand control ON — make a fist ✊ to tap!');
         else { this.toast(`Hand control unavailable: ${Hand.statusEl ? Hand.statusEl.textContent : 'camera error'}`); this.drawModeRing('mouse'); }
       });
     } else if (mode === 'mouse' && Hand.active) {

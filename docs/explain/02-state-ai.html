@@ -1,0 +1,224 @@
+<!-- ===================== ภาค 2: สถานะสัตว์และ AI ===================== -->
+<section class="part">
+<h1 class="part-title"><span>ภาค 2</span>สถานะสัตว์และระบบ AI</h1>
+<p>ภาคนี้คือ "สมอง" ของเกม: <code>PetState</code> เก็บข้อมูลสัตว์และคำนวณการเปลี่ยนแปลงทุกวินาที, <code>EmotionAI</code> ตัดสินอารมณ์, <code>EvolutionAI</code> ตัดสินสายวิวัฒนาการ และ <code>CareAdvisor</code> แนะนำว่าควรดูแลอะไรก่อน ทั้ง 4 ไฟล์ไม่วาดอะไรบนจอเลย ฉากต่างๆ เป็นผู้เรียกใช้แล้วนำผลไปแสดง</p>
+
+<h2 class="file">js/systems/PetState.js <small>ข้อมูลและพฤติกรรมของสัตว์ · 372 บรรทัด</small></h2>
+
+<h3>ค่าคงที่และฟังก์ชันช่วยด้านบนไฟล์</h3>
+<table>
+<tr><th>ชื่อ</th><th>หน้าที่</th></tr>
+<tr><td><code>SAVE_KEY</code></td><td>คีย์เซฟแบบเก่า (มีไฟล์เดียว) ใช้แค่ตอนย้ายเซฟเก่าไปไฟล์ 1</td></tr>
+<tr><td><code>SLOT_COUNT = 3</code></td><td>จำนวนไฟล์เซฟ</td></tr>
+<tr><td><code>slotKey(n)</code></td><td>สร้างคีย์ localStorage ของไฟล์ที่ n เช่น <code>lovelyPetEvolutions.slot.2</code></td></tr>
+<tr><td><code>clamp(v)</code></td><td>บีบค่าให้อยู่ในช่วง 0–100 ใช้ทุกครั้งที่แก้ค่าสถานะ กันค่าติดลบหรือเกิน 100</td></tr>
+<tr><td><code>emptyWindow()</code></td><td>สร้าง "หน้าต่างพฤติกรรม" ใหม่ที่ทุกค่าเป็น 0: แต้ม feed/play/care/rest, จำนวนครั้งที่คุย (chat), เวลาที่ถูกละเลย (neglect), เวลาทั้งหมด (time) และผลรวมความเป็นอยู่ (wellSum) ล้างใหม่ทุกวัน</td></tr>
+<tr><td><code>findItem(key)</code></td><td>วนทุกหมวดใน <code>D.ITEMS</code> หาไอเทมที่ key ตรง แล้วคืนสำเนาที่เพิ่มฟิลด์ <code>care</code> = ชื่อหมวด (เช่น salmon → care: 'feed') ไม่เจอคืน null</td></tr>
+</table>
+
+<h3><code>constructor(data)</code>: สร้างสัตว์</h3>
+<p>ใช้ <code>Object.assign(this, ค่าเริ่มต้น, data)</code>: ใส่ค่าเริ่มต้นทั้งหมดก่อน แล้วทับด้วย <code>data</code> (ถ้ามี) จึงใช้ได้ทั้งสร้างตัวใหม่และโหลดจากเซฟ ฟิลด์สำคัญ:</p>
+<table>
+<tr><th>ฟิลด์</th><th>ความหมาย</th></tr>
+<tr><td><code>species, name</code></td><td>ชนิด ('dog'/'cat') และชื่อ</td></tr>
+<tr><td><code>stage, line</code></td><td>ร่างที่ 1–5 และสายวิวัฒนาการ (ร่าง 1 ยังไม่มีสาย = null)</td></tr>
+<tr><td><code>stats</code></td><td>ค่าสถานะ 4 ตัว เริ่มที่ 80</td></tr>
+<tr><td><code>sleeping, sleepMode, napUntil</code></td><td>กำลังหลับไหม, หลับแบบไหน ('nap' งีบ / 'night' นอนจนกดปลุก / 'auto' หมดแรงหลับเอง) และเวลาที่งีบจะจบ</td></tr>
+<tr><td><code>day, dayTime</code></td><td>วันที่เท่าไร และวินาทีที่ผ่านไปในวันนี้</td></tr>
+<tr><td><code>completed</code></td><td>สายที่เคยไปถึงร่าง 5 แล้ว (ชื่อสายถูกเปิดเผยในหนังสือ)</td></tr>
+<tr><td><code>missStreak</code></td><td>พลาดเป้าติดกันกี่วัน</td></tr>
+<tr><td><code>bond</code></td><td>ค่า Social (แถบชมพู) เริ่ม 10</td></tr>
+<tr><td><code>gameTime, lastInteraction</code></td><td>เวลารวมที่เล่น และเวลาที่ยุ่งกับสัตว์ครั้งล่าสุด (ใช้คำนวณความเหงา)</td></tr>
+<tr><td><code>careWindow, totals</code></td><td>แต้มพฤติกรรมของวันนี้ และจำนวนครั้งรวมตลอดชีวิต</td></tr>
+<tr><td><code>history, unlocked</code></td><td>ประวัติการเปลี่ยนร่าง และรายชื่อร่างที่ปลดล็อกแล้ว (แสดงในหนังสือ)</td></tr>
+<tr><td><code>id</code></td><td>รหัสสุ่ม: เวลาปัจจุบันฐาน 36 + สุ่ม 4 ตัว</td></tr>
+<tr><td><code>slot, savedAt</code></td><td>อยู่ในไฟล์เซฟไหน (null = ยังไม่บันทึก) และเวลาที่บันทึกล่าสุด</td></tr>
+</table>
+<p>บรรทัดสุดท้ายเรียก <code>this.migrate()</code> แปลงข้อมูลเซฟเก่าทุกครั้ง</p>
+
+<h3><code>migrate()</code>: แปลงเซฟรุ่นเก่า</h3>
+<ol>
+  <li>ถ้าชื่อสายอยู่ใน <code>LEGACY_LINES</code> เปลี่ยนเป็นชื่อใหม่ ถ้าเป็นชื่อที่ไม่รู้จักเลย ใช้ 'playful'</li>
+  <li><code>unlocked</code>: ใช้ regex <code>/^(dog|cat)_([a-z]+)_(\d)$/</code> แยกชื่อร่าง เช่น <code>dog_beauty_3</code> ออกเป็น ชนิด/สาย/ขั้น แล้วประกอบใหม่ด้วยชื่อสายใหม่ (<code>dog_selfcare_3</code>)</li>
+  <li><code>history</code>: แปลงชื่อสายในแต่ละรายการแบบเดียวกัน</li>
+  <li>เติมฟิลด์ที่เซฟเก่าไม่มี: <code>careWindow.chat</code>, <code>sleepMode</code> (ถ้าหลับอยู่ = 'auto'), <code>completed</code>, <code>dayTime</code></li>
+  <li>ถ้าเซฟเก่าอยู่ร่าง 5 แล้ว ให้นับว่าสำเร็จสายนั้น</li>
+</ol>
+
+<h3>ฟังก์ชันสร้างและค่าที่คำนวณได้</h3>
+<table>
+<tr><th>เมธอด</th><th>คืนค่า</th></tr>
+<tr><td><code>static create(species, name)</code></td><td>สร้างสัตว์ใหม่ และปลดล็อกร่างแรก (<code>dog_baby</code> หรือ <code>cat_baby</code>)</td></tr>
+<tr><td><code>wellbeing()</code></td><td>ค่าเฉลี่ยของค่าสถานะทั้ง 4</td></tr>
+<tr><td><code>secondsSinceInteraction()</code></td><td>gameTime − lastInteraction = ไม่ได้ยุ่งกี่วินาที</td></tr>
+<tr><td><code>isDayOver / dayLeft / dayProgress</code></td><td>หมดวันหรือยัง / เหลือกี่วินาที / ผ่านไปกี่เปอร์เซ็นต์</td></tr>
+<tr><td><code>isMax / isCompleted(line)</code></td><td>ถึงร่าง 5 หรือยัง / สายนี้เคยสำเร็จไหม</td></tr>
+<tr><td><code>lineName(line)</code></td><td>ชื่อสายถ้าสำเร็จแล้ว ไม่งั้น '???'</td></tr>
+<tr><td><code>formName()</code></td><td>ชื่อร่างปัจจุบันจาก FORM_NAMES (ร่าง 1 = Newborn)</td></tr>
+<tr><td><code>stageLabel / breedLabel</code></td><td>"Teen (Stage 3)" / "Dog" หรือ "Cat"</td></tr>
+<tr><td><code>formKey()</code></td><td>รหัสร่างที่ใช้หาภาพ เช่น <code>cat_royal_4</code> หรือ <code>cat_baby</code></td></tr>
+<tr><td><code>bodyKey / portraitKey</code></td><td>ชื่อภาพตัวเต็ม <code>body_...</code> และรูปหัว <code>portrait_...</code></td></tr>
+<tr><td><code>bondLevel()</code></td><td>ระดับความผูกพัน 1–6 (ทุก 20 แต้มขึ้น 1 ระดับ)</td></tr>
+</table>
+
+<h3><code>tick(dt)</code>: เดินเวลา (เรียกทุกเฟรมจาก GameScene)</h3>
+<p><code>dt</code> = จำนวนวินาทีในเกมที่ผ่านไปตั้งแต่เฟรมก่อน (คูณความเร็วแล้ว)</p>
+<ol>
+  <li>ถ้าหมดวันแล้ว ตรึง <code>dayTime</code> ไว้ที่ค่าสูงสุดแล้วออกทันที ค่าสถานะไม่ลดอีก</li>
+  <li>ตัด <code>dt</code> ไม่ให้เกินเวลาที่เหลือของวัน แล้วบวกเข้า <code>gameTime</code> และ <code>dayTime</code></li>
+  <li><b>ถ้ากำลังหลับ:</b> พลัง +0.8×dt, ความอิ่ม −0.10×dt ถ้าเป็นการงีบหรือนอนที่ผู้เล่นสั่ง ได้แต้ม rest เพิ่ม 0.06×dt จากนั้นเช็กการตื่น: งีบ → ตื่นเมื่อถึง napUntil, หมดแรงหลับเอง → ตื่นเมื่อพลังเต็ม 100, นอนกลางคืน → ไม่ตื่นเอง</li>
+  <li><b>ถ้าตื่นอยู่:</b> ค่าทั้ง 4 ลดตามอัตรา DECAY ถ้าไม่ได้ยุ่งเกิน 60 วินาที ความสุขลดเพิ่ม ถ้าพลังเหลือ ≤ 3 จะหลับเอง (sleepMode 'auto')</li>
+  <li>ไม่ว่าหลับหรือตื่น: ถ้าความอิ่มต่ำกว่า 20 สุขภาพลดเพิ่ม</li>
+  <li>บันทึกพฤติกรรม: เวลาเพิ่ม, <code>wellSum</code> += ความเป็นอยู่×dt (ใช้หาค่าเฉลี่ยทั้งวันภายหลัง) และถ้าค่าใดใน อิ่ม/สุข/สุขภาพ ต่ำกว่า 25 นับเวลาเป็น "ถูกละเลย"</li>
+</ol>
+<div class="note"><b>สำคัญ:</b> เวลาเดินเฉพาะตอนอยู่หน้าเลี้ยงเท่านั้น ปิดเกมหรือสลับแท็บแล้วค่าจะคงเดิม ไม่มีการชดเชยเวลาที่ปิดไป</div>
+
+<h3><code>wake()</code></h3>
+<p>ปลุก: sleeping = false, sleepMode = null, napUntil = 0</p>
+
+<h3><code>nextDay()</code>: ขึ้นวันใหม่ (กดปุ่ม NEXT DAY)</h3>
+<ol>
+  <li>เรียก <code>EvolutionAI.analyze(careWindow, stage)</code> วิเคราะห์การเลี้ยงทั้งวัน</li>
+  <li>เก็บข้อมูลร่างก่อนเปลี่ยน (<code>from</code>) ไว้ให้ฉากวิวัฒนาการแสดง</li>
+  <li>ตัดสินผล (<code>type</code>):
+    <ul>
+      <li><b>max</b>: อยู่ร่าง 5 แล้ว ไม่เปลี่ยนอะไร (ต้องกด Rebirth)</li>
+      <li>ร่าง 1: ถ้าผ่านสายใดสายหนึ่ง → <b>evolve</b> เข้าร่าง 2 ของสายนั้น ไม่ผ่าน → stay</li>
+      <li>ร่าง 2–4 และผ่านเป้าสายเดิม → <b>evolve</b> ขึ้น 1 ขั้น รีเซ็ต missStreak</li>
+      <li>ไม่ผ่าน แต่ผ่านถ้าใช้ "เกณฑ์แบบง่าย" (เรียก analyze ด้วย stage 1) → <b>near</b> คงร่าง ไม่นับว่าพลาด</li>
+      <li>ไม่ผ่านเลย → missStreak +1 ถ้าครบจำนวนที่อนุญาต → <b>regress</b> ลด 1 ขั้น ไม่งั้น → <b>warn</b> เตือนเฉยๆ</li>
+    </ul>
+  </li>
+  <li>ถ้าเพิ่งถึงร่าง 5 บันทึกสายนั้นใน <code>completed</code></li>
+  <li>เริ่มวันใหม่: ถ้าทั้งวันไม่คุยเลย Social −8, วัน +1, dayTime = 0, ล้าง careWindow ถ้านอนกลางคืนอยู่ พลังเต็ม 100 แล้วปลุก, ตั้ง lastInteraction ใหม่ (ไม่ให้เหงาทันทีตอนเช้า)</li>
+  <li>คืน <code>{ type, from, result }</code> ให้ฉาก Day/Evolution ใช้แสดงผล</li>
+</ol>
+
+<h3>เมธอดเกี่ยวกับการลดร่างและเกิดใหม่</h3>
+<ul>
+  <li><code>missesAllowed()</code> พลาดได้กี่วันจาก REGRESS_AFTER (ไม่มีค่าใช้ 2) และ <code>missesLeft()</code> เหลืออีกกี่วัน</li>
+  <li><code>regress()</code> ลดขั้น 1 (ไม่ต่ำกว่า 1) ถ้ากลับเป็นร่าง 1 ล้างสาย และบันทึกลงประวัติพร้อม <code>regress: true</code></li>
+  <li><code>rebirth()</code> กลับเป็นร่าง 1 วัน 1 ค่าสถานะ 80 ทุกตัว แต่ <b>เก็บ</b> ชื่อ ร่างที่ปลดล็อก และสายที่สำเร็จไว้</li>
+</ul>
+
+<h3><code>useItem(key)</code>: ใช้ไอเทม</h3>
+<p>คืน <code>{ ok, message, deltas, item }</code></p>
+<ol>
+  <li>หาไอเทม ไม่เจอ → ok: false</li>
+  <li>เก็บค่าสถานะก่อนใช้ (<code>before</code>) และหาค่าสถานะที่หมวดนี้เกี่ยวข้อง (<code>statKey</code>)</li>
+  <li>ปฏิเสธถ้าหมดวันแล้ว หรือกำลังหลับแต่ไม่ได้กดไอเทมหมวดพักผ่อน</li>
+  <li><b>คำนวณคุณค่าการดูแล</b>: <code>need = (100 − ค่าที่เกี่ยวข้อง)/100</code> แล้ว <code>careValue = 10 × (0.5 + need)</code> ยิ่งสัตว์ต้องการมาก ยิ่งได้แต้มมาก (5–15 แต้ม) แต้มนี้ใช้ตัดสินสายวิวัฒนาการ</li>
+  <li><b>หมวดพักผ่อน:</b> ถ้าหลับอยู่ = ปลุก (ไม่ได้แต้ม ถ้าพลังยังไม่ถึง 50 ความสุข −5 "ตื่นเร็วไป") ถ้าตื่นอยู่ = เริ่มงีบ 30 วินาที หรือนอนยาว ถ้าพลังเกิน 85 อยู่แล้วได้แค่ 1 แต้ม</li>
+  <li><b>หมวดอื่น:</b> ถ้าจะเล่นแต่พลังต่ำกว่า 15 → ปฏิเสธ ไม่งั้นบวกผล <code>fx</code> ทุกตัวเข้าค่าสถานะ แล้วเช็กกรณีพิเศษ:
+    <ul>
+      <li>ให้อาหารตอนอิ่มเกิน 90 → สุข −5 สุขภาพ −5 ได้ 1 แต้ม "Too full!"</li>
+      <li>ให้วิตามินตอนสุขภาพเกิน 50 → สุข −5 ได้ 2 แต้ม</li>
+      <li>อาบน้ำตอนสะอาดเกิน 90 → ได้ 1 แต้ม</li>
+      <li>ปกติ → ข้อความตามหมวด เช่น "Yum! Delicious!"</li>
+    </ul>
+  </li>
+  <li>บวกแต้มเข้า careWindow ของหมวดนั้น นับจำนวนครั้งรวม และอัปเดตเวลาที่ยุ่งล่าสุด</li>
+  <li>คำนวณ <code>deltas</code> = ค่าหลัง − ค่าก่อน ของแต่ละสถานะ (ปัดเศษ) ใช้แสดงตัวเลข +/− ลอยบนจอ</li>
+</ol>
+
+<h3>การโต้ตอบอื่นๆ</h3>
+<table>
+<tr><th>เมธอด</th><th>ผล</th></tr>
+<tr><td><code>onChat()</code></td><td>คุย 1 ครั้ง: นับครั้ง (รวม/วันนี้), Social +3 (ไม่เกิน 100), ถ้าตื่นอยู่ความสุข +1</td></tr>
+<tr><td><code>onPat()</code></td><td>ลูบหัว: หายเหงา ความสุข +1 ไม่นับเป็นการคุย</td></tr>
+<tr><td><code>onPraise()</code></td><td>ชม (ท่า 👍): Social +2 ความสุข +1</td></tr>
+<tr><td><code>evolveTo(line)</code></td><td>ขึ้น 1 ขั้น ตั้งสาย บันทึกประวัติ และปลดล็อกภาพร่างใหม่ใน unlocked</td></tr>
+</table>
+
+<h3>ระบบบันทึก (3 ไฟล์)</h3>
+<table>
+<tr><th>เมธอด</th><th>การทำงาน</th></tr>
+<tr><td><code>get saved()</code> / <code>set saved(v)</code></td><td>getter คืน true ถ้ามี slot ส่วน setter ว่างไว้ เพื่อไม่ให้เซฟรุ่นเก่าที่มีฟิลด์ saved ทำให้ <code>Object.assign</code> พัง</td></tr>
+<tr><td><code>save(slot)</code></td><td>ถ้าส่ง slot มาให้ใช้ไฟล์นั้น ถ้ายังไม่มี slot ไม่ทำอะไร จากนั้นตั้ง savedAt แล้วแปลงทั้งออบเจ็กต์เป็น JSON เขียนลง localStorage</td></tr>
+<tr><td><code>autosave()</code></td><td>บันทึกเฉพาะเมื่อมีไฟล์แล้ว (เรียกบ่อยจากหลายจุด)</td></tr>
+<tr><td><code>static loadSlot(n)</code></td><td>อ่าน JSON จากไฟล์ n สร้าง PetState ใหม่ (ผ่าน migrate) และตั้ง slot = n ข้อมูลเสียหรือไม่มี คืน null</td></tr>
+<tr><td><code>static slots()</code></td><td>ย้ายเซฟเก่าก่อน แล้วคืนอาร์เรย์ 3 ช่อง [สัตว์หรือ null]</td></tr>
+<tr><td><code>static hasAnySave()</code></td><td>มีไฟล์ที่ไม่ว่างอย่างน้อย 1 ไฟล์ไหม (ปุ่ม Continue ใช้)</td></tr>
+<tr><td><code>static clearSlot(n)</code></td><td>ลบไฟล์ n</td></tr>
+<tr><td><code>static copySlot(from, to)</code></td><td>โหลดไฟล์ต้นทาง คัดลอกลึกด้วย JSON ให้ id ใหม่ (นับเป็นสัตว์อีกตัว) แล้วบันทึกลงไฟล์ปลายทาง</td></tr>
+<tr><td><code>static migrateOldSave()</code></td><td>ถ้ามีเซฟแบบเก่า และไฟล์ 1 ว่าง ย้ายไปไว้ไฟล์ 1 แล้วลบคีย์เก่า</td></tr>
+</table>
+<p>ท้ายไฟล์ส่งออก <code>PetState.SLOT_COUNT</code> และ <code>PetGame.PetState</code></p>
+
+<h2 class="file">js/systems/EmotionAI.js <small>AI อารมณ์และความต้องการ · 68 บรรทัด</small></h2>
+<p>หลักการ: ให้ <b>คะแนน</b> แต่ละอารมณ์จากค่าสถานะ แล้วเลือกอารมณ์ที่คะแนนสูงสุด</p>
+<h3><code>EMOTIONS</code>: อารมณ์ 8 แบบ</h3>
+<p>แต่ละแบบมีป้ายชื่อ อีโมจิ ท่าทาง (<code>anim</code>) ที่ GameScene ใช้ขยับตัวสัตว์ และ <code>need</code> = หมวดการดูแลที่ช่วยได้ เช่น hungry 🍖 ท่า sway ต้องการ feed, tired 🥱 ท่า yawn ต้องการ rest</p>
+<h3><code>evaluate(pet)</code></h3>
+<ol>
+  <li>ถ้าหลับ → ตอบ sleeping ทันที</li>
+  <li>คำนวณคะแนน (ยิ่งค่าต่ำกว่าเกณฑ์มาก คะแนนยิ่งสูง):
+    <table>
+    <tr><th>อารมณ์</th><th>สูตร</th></tr>
+    <tr><td>sick</td><td>สุขภาพ &lt; 35 → (35 − สุขภาพ) × 3</td></tr>
+    <tr><td>hungry</td><td>อิ่ม &lt; 40 → (40 − อิ่ม) × 2.5</td></tr>
+    <tr><td>tired</td><td>พลัง &lt; 30 → (30 − พลัง) × 2.5</td></tr>
+    <tr><td>lonely</td><td>ไม่ได้ยุ่ง &gt; 45 วิ และสุข &lt; 65 → min(60, (เวลา−45)/2) + (65 − สุข)</td></tr>
+    <tr><td>sad</td><td>สุข &lt; 35 → (35 − สุข) × 2</td></tr>
+    <tr><td>happy</td><td>เฉลี่ย &gt; 70 และสุข &gt; 65 → เฉลี่ย − 55</td></tr>
+    <tr><td>normal</td><td>คงที่ 12 (เป็นค่าตั้งต้นที่ต้องชนะ)</td></tr>
+    </table>
+  </li>
+  <li>วนหาคะแนนสูงสุด และคำนวณความเข้ม <code>intensity</code> = คะแนน/80 (ไม่เกิน 1)</li>
+  <li>คืนผ่าน <code>_result</code> ซึ่งรวม key, intensity, scores เข้ากับข้อมูลใน EMOTIONS</li>
+</ol>
+<h3><code>callout(emotion, pet)</code></h3>
+<p>คืนประโยคที่สัตว์ "เรียก" ผู้เล่นเอง ตามอารมณ์และชนิด (หมามี "โฮ่ง" แมวมี "เหมียว") สุ่ม 1 ประโยคด้วย <code>Phaser.Utils.Array.GetRandom</code> อารมณ์ที่ไม่มีประโยค (normal, sleeping) คืน null</p>
+
+<h2 class="file">js/systems/EvolutionAI.js <small>AI ตัดสินสายวิวัฒนาการ · 104 บรรทัด</small></h2>
+<p>ดูแต้มการดูแลทั้งวันใน careWindow แล้วคำนวณ <b>สัดส่วน</b> ของแต่ละด้าน เช่น feed 30 แต้มจากทั้งหมด 60 = 50%</p>
+<h3>เกณฑ์ <code>CFG</code> (ปกติ) และ <code>EASY</code> (ร่าง 1–2)</h3>
+<table>
+<tr><th>ค่า</th><th>ปกติ</th><th>ง่าย</th><th>ความหมาย</th></tr>
+<tr><td>neglectMaxPoints</td><td>15</td><td>15</td><td>แต้มรวมน้อยกว่านี้ = ถูกละเลย</td></tr>
+<tr><td>minPoints</td><td>20</td><td>10</td><td>สายเน้นด้านเดียวต้องมีแต้มรวมอย่างน้อย</td></tr>
+<tr><td>minBalanced</td><td>40</td><td>24</td><td>สายสมดุลต้องมีแต้มรวมอย่างน้อย</td></tr>
+<tr><td>focusShare</td><td>45%</td><td>35%</td><td>ด้านที่เน้นต้องมีสัดส่วนอย่างน้อย</td></tr>
+<tr><td>sleepyShare</td><td>50%</td><td>40%</td><td>สาย Sleepy: rest อย่างน้อย</td></tr>
+<tr><td>lowShare</td><td>20%</td><td>30%</td><td>ด้านที่ต้อง "ต่ำ" ห้ามเกิน</td></tr>
+<tr><td>balancedMin–Max</td><td>15–35%</td><td>10–40%</td><td>สมดุล: ทุกด้านอยู่ในช่วงนี้</td></tr>
+<tr><td>leaderChats</td><td>8</td><td>4</td><td>สาย Leader: คุยกันอย่างน้อยกี่ครั้งต่อวัน</td></tr>
+</table>
+<p><code>configFor(stage)</code> ถ้าร่าง ≤ 2 รวม CFG กับ EASY (ค่าใน EASY ทับ) ไม่งั้นใช้ CFG</p>
+<h3><code>analyze(careWindow, stage)</code></h3>
+<ol>
+  <li>รวมแต้ม 4 ด้านเป็น <code>total</code> แล้วหาสัดส่วน <code>sh</code> ของแต่ละด้าน (ถ้า total = 0 ทุกด้านเป็น 0 กันหารศูนย์)</li>
+  <li>ฟังก์ชันช่วย: <code>low(...ด้าน)</code> ทุกด้านที่ระบุ ≤ lowShare, <code>top(ด้าน)</code> ด้านนี้มากที่สุด (≥ ทุกด้าน), <code>balanced</code> แต้มพอและทุกด้านอยู่ในช่วงสมดุล</li>
+  <li>ตรวจเงื่อนไขทุกสายเก็บใน <code>met</code>:
+    <ul>
+      <li>neglect: แต้มรวม &lt; 15</li>
+      <li>leader: สมดุล + คุยถึงเกณฑ์ / royal: สมดุล</li>
+      <li>sleepy: แต้มพอ, rest ≥ 50%, feed/play/care ต่ำทั้งหมด</li>
+      <li>gluttony / selfcare / playful: แต้มพอ, ด้านนั้นมากสุดและ ≥ 45%, อีก 2 ด้านต่ำ</li>
+    </ul>
+  </li>
+  <li>เลือกสายแรกที่ผ่านตามลำดับ <code>ORDER</code> (neglect, leader, royal, sleepy, gluttony, selfcare, playful) leader ต้องมาก่อน royal เพราะคนที่ผ่าน leader ก็ผ่าน royal ด้วย</li>
+  <li>สร้างข้อความเหตุผลเป็นภาษาอังกฤษพร้อมเปอร์เซ็นต์ และคืน: สายที่ได้, met ทุกสาย, สัดส่วน, แต้มรวม, จำนวนคุย, ความเป็นอยู่เฉลี่ย (wellSum/เวลา), สัดส่วนเวลาที่ถูกละเลย และเหตุผล</li>
+</ol>
+<p><code>meets(line, careWindow, stage)</code> ทางลัดถามว่าวันนี้ผ่านสายนี้ไหม (true/false)</p>
+
+<h2 class="file">js/systems/CareAdvisor.js <small>AI แนะนำการดูแล · 74 บรรทัด</small></h2>
+<h3><code>urgency(pet)</code>: คะแนนความเร่งด่วน</h3>
+<ul>
+  <li><code>sq(v) = ((100 − v)/100)² × 100</code> ใช้ <b>ยกกำลังสอง</b> เพื่อให้ค่าที่ต่ำมากเร่งด่วนกว่าชัดเจน เช่น ค่า 50 ได้ 25 คะแนน แต่ค่า 20 ได้ 64 คะแนน</li>
+  <li>คูณน้ำหนัก <code>WEIGHTS</code>: care 1.3 &gt; feed 1.25 &gt; rest 1.1 &gt; play 1.0 (สุขภาพสำคัญสุด)</li>
+  <li>feed เป็น 0 ถ้าอิ่มเกิน 90, rest เป็น 0 ถ้าพลังเกิน 85</li>
+  <li>play บวกความเหงา: ทุกวินาทีที่ไม่ได้ยุ่งเกิน 45 วิ +0.4</li>
+  <li>ถ้าพลังต่ำกว่า 15 ลดคะแนน play เหลือ 20% (เหนื่อยเกินจะเล่น)</li>
+</ul>
+<h3><code>recommend(pet, emotion)</code></h3>
+<ol>
+  <li>เรียงหมวดตามคะแนนจากมากไปน้อย (<code>ranking</code>) ตัวแรกคือ <code>top</code></li>
+  <li>ฟังก์ชัน <code>out(action, text)</code> สร้างผลลัพธ์พร้อมไอเทมที่ควรใช้</li>
+  <li>ถ้าหลับ: หิวมาก (feed &gt; 45) แนะนำปลุกแล้วให้อาหาร ไม่งั้นแนะนำให้นอนต่อ</li>
+  <li>ถ้าคะแนนสูงสุด &lt; 12 = สบายดี แนะนำให้คุยกัน</li>
+  <li>เลือกข้อความ: คะแนน &lt; 30 ใช้ข้อความเบา (<code>mild</code>) ไม่งั้นใช้ข้อความหนัก (<code>strong</code>) มีกรณีพิเศษ: เหงา → "feels lonely", อยากเล่นแต่เหนื่อย → "Rest first", ป่วยหนัก (สุขภาพ &lt; 30) → "Give vitamins"</li>
+</ol>
+<h3><code>itemFor(action, pet)</code></h3>
+<p>ไอเทมที่จะไฮไลต์: ป่วยหนัก → vitamins, จะให้อาหารแต่ยังค่อนข้างอิ่ม (&gt; 70) → bone (ขนมชิ้นเล็ก) นอกนั้นใช้ตาม CARE_TARGET</p>
+</section>
