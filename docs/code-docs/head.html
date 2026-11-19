@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>Paws &amp; Phases — Code</title>
+<style>
+  @page { size: A4; margin: 13mm 12mm 14mm 12mm; }
+  :root { --olive: #7a7d47; --olive-dark: #5d5f33; --olive-mid: #b2b579; --olive-light: #e3e5b8; --teal: #20a6b5; --teal-pale: #e6f8fa; --bg: #f3f4e6; --ink: #1f1f1f; --muted: #6b6b5a; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Leelawadee UI', 'Leelawadee', 'Tahoma', sans-serif; color: var(--ink); font-size: 10pt; line-height: 1.55; margin: 0; }
+  .part { page-break-before: always; }
+  .part-title { font-size: 20pt; color: var(--olive-dark); margin: 0 0 8px; padding-bottom: 6px; border-bottom: 4px solid var(--olive); }
+  .part-title span { display: inline-block; font-size: 10pt; background: var(--olive); color: #fff; border-radius: 999px; padding: 2px 12px; margin-right: 10px; vertical-align: middle; }
+  .file-title { font-size: 17pt; margin: 0 0 8px; padding: 8px 14px; background: var(--olive); color: #fff; border-radius: 10px; }
+  .file-title code { background: none; color: #fff; font-size: 16pt; padding: 0; }
+  .file-title small { font-size: 9.5pt; font-weight: normal; margin-left: 10px; opacity: 0.85; }
+  .role { background: var(--olive-light); border-radius: 8px; padding: 7px 12px; margin: 6px 0; font-size: 10.3pt; }
+  .role b { color: var(--olive-dark); }
+  .about { margin: 6px 0 8px; }
+  h3 { font-size: 11.3pt; color: #2f3e1c; margin: 16px 0 4px; page-break-after: avoid; }
+  h3::before { content: ''; display: inline-block; width: 8px; height: 8px; background: var(--teal); border-radius: 2px; margin-right: 8px; vertical-align: middle; }
+  h3 .lines { font-size: 8.5pt; font-weight: normal; color: var(--muted); margin-left: 6px; }
+  p { margin: 4px 0 6px; }
+  code { font-family: Consolas, 'Courier New', monospace; font-size: 8.8pt; background: #eeeee2; padding: 0 4px; border-radius: 3px; color: #3b3d1c; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.3pt; }
+  tr { page-break-inside: avoid; }
+  th { background: var(--olive-mid); color: #fff; text-align: left; padding: 4px 8px; font-weight: 600; }
+  td { border-bottom: 1px solid #e2e2d6; padding: 4px 8px; vertical-align: top; }
+  table.map td:first-child { width: 16%; white-space: nowrap; color: var(--muted); }
+  ul, ol { margin: 3px 0 6px; padding-left: 22px; }
+  li { margin: 1px 0; }
+  .expl { background: var(--teal-pale); border-left: 5px solid var(--teal); border-radius: 0 8px 8px 0; padding: 6px 12px; margin: 4px 0 6px; font-size: 9.8pt; page-break-after: avoid; }
+  .expl p:first-child { margin-top: 0; } .expl p:last-child { margin-bottom: 0; }
+  .src { background: #2b2a1f; color: #f3f0d6; border-radius: 8px; padding: 6px 0; margin: 0 0 8px; font-family: Consolas, 'Leelawadee UI', monospace; font-size: 8pt; line-height: 1.42; }
+  .src .l { display: flex; page-break-inside: avoid; }
+  .src .n { flex: 0 0 34px; text-align: right; padding-right: 8px; color: #8a8668; user-select: none; }
+  .src .t { flex: 1 1 auto; white-space: pre-wrap; word-break: break-all; padding-right: 8px; }
+  .src .c { color: #b8d48a; }
+  .note { background: #fbf9e8; border: 1px solid var(--olive-mid); border-radius: 8px; padding: 7px 12px; margin: 8px 0; font-size: 9.6pt; }
+  .cover { height: 266mm; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: var(--bg); border: 6px solid var(--olive); border-radius: 22px; }
+  .cover .badge { background: var(--olive); color: #fff; padding: 4px 16px; border-radius: 999px; font-size: 10pt; letter-spacing: 2px; }
+  .cover h1 { font-size: 40pt; margin: 18px 0 4px; color: var(--olive-dark); }
+  .cover .sub { font-size: 16pt; color: var(--teal); margin-bottom: 26px; }
+  .cover .pets { font-size: 48pt; margin: 4px 0 24px; }
+  .cover .meta { color: var(--muted); font-size: 11pt; line-height: 1.9; }
+</style>
+</head>
+<body>
