@@ -59,6 +59,9 @@ class GameScene extends Phaser.Scene {
     PetGame.chat.attach(this);
     if (this.fresh) {
       this.time.delayedCall(700, () => this.petSpeak(`สวัสดี! เราชื่อ ${this.pet.name} ฝากตัวด้วยนะ!`, true));
+      PetGame.chat.system(this.pet.slot
+        ? `💾 ${this.pet.name} is saved to File ${this.pet.slot}. Auto-save is ON.`
+        : `⚠️ All 3 save files are full. Open Menu → Save Game to keep ${this.pet.name}.`);
     } else if (this.away > 60) {
       PetGame.chat.system(`You were away for ${Math.round(this.away / 60)} min. ${this.pet.name}'s status changed meanwhile.`);
     }
@@ -729,7 +732,7 @@ class GameScene extends Phaser.Scene {
     this.showToast('Starting camera… please allow camera access');
     Hand.start().then((ok) => {
       if (!this.sys.isActive()) return;
-      this.showToast(ok ? 'Hand control ON — pinch 🤏 to tap!' : 'Camera is not available');
+      this.showToast(ok ? 'Hand control ON — make a fist ✊ to tap!' : 'Camera is not available');
     });
   }
 

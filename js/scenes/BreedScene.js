@@ -79,8 +79,10 @@ class BreedScene extends Phaser.Scene {
   }
 
   start(name) {
-    // ยังไม่บันทึก — เซฟเดิม (ถ้ามี) ยังอยู่จนกว่าจะกด Save ที่เมนู
+    // บันทึกลงไฟล์ว่างช่องแรกทันที (autosave ตลอด) ; ถ้าไฟล์เต็มทั้ง 3 ช่อง -> ต้องกด Save ที่เมนูเอง
     const pet = PetGame.PetState.create(this.species, name);
+    const empty = PetGame.PetState.slots().findIndex((s) => !s);
+    if (empty >= 0) pet.save(empty + 1);
     this.scene.start('Day', { pet, fresh: true });
   }
 }
