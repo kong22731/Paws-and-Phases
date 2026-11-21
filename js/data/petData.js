@@ -67,7 +67,7 @@ PetGame.Data = {
   DECAY: {
     fullness: 0.20,
     happiness: 0.13,
-    health: 0.08,
+    health: 0.15,
     energy: 0.10,
     hungryHealthPenalty: 0.15,
     lonelyHappinessPenalty: 0.10,

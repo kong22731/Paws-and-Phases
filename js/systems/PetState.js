@@ -257,14 +257,14 @@ window.PetGame = window.PetGame || {};
         if (item.care === 'feed' && before.fullness > 90) {
           s.happiness = clamp(s.happiness - 5);
           s.health = clamp(s.health - 5);
-          careValue = 1;
+          careValue = 3; // ยังนับเป็นการกิน (สาย Gluttony) แต่เสียความสุข/สุขภาพ
           message = 'Too full! Overeating is bad for health.';
         } else if (key === 'vitamins' && before.health > 50) {
           s.happiness = clamp(s.happiness - 5);
           careValue = 2;
           message = 'Not sick — vitamins are not needed now.';
         } else if (item.care === 'care' && before.health > 90) {
-          careValue = 1;
+          careValue = 4; // สะอาดอยู่แล้วก็ยังนับเป็นการดูแล (สาย Self-Care)
           message = 'Already squeaky clean!';
         } else {
           message = `${item.label}: ` + { feed: 'Yum! Delicious!', play: 'So much fun!', care: 'Fresh and clean!' }[item.care];
