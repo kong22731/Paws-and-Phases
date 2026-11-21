@@ -1,0 +1,468 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<title>Paws &amp; Phases — Game Guide</title>
+<style>
+  @page { size: A4; margin: 13mm 13mm 14mm 13mm; }
+  :root { --olive: #7a7d47; --olive-dark: #5d5f33; --olive-mid: #b2b579; --olive-light: #e6e8bf; --olive-pale: #f3f4e3; --teal: #20a6b5; --teal-light: #8ee8f2; --teal-pale: #e6f8fa; --pink: #b887c2; --ink: #23241a; --muted: #6b6b5a; }
+  * { box-sizing: border-box; }
+  body { font-family: 'Leelawadee UI', 'Leelawadee', Tahoma, sans-serif; color: var(--ink); font-size: 10.4pt; line-height: 1.6; margin: 0; }
+  .page { page-break-before: always; }
+  h1.ch { font-size: 22pt; color: var(--olive-dark); margin: 0 0 10px; padding: 6px 0 8px; border-bottom: 4px solid var(--olive); display: flex; align-items: center; gap: 12px; }
+  h1.ch .num { background: var(--teal); color: #fff; border-radius: 12px; font-size: 13pt; padding: 3px 12px; }
+  h2 { font-size: 14pt; color: var(--olive-dark); margin: 18px 0 6px; padding: 5px 12px; background: var(--olive-light); border-left: 6px solid var(--olive); border-radius: 0 8px 8px 0; page-break-after: avoid; }
+  h3 { font-size: 11.5pt; color: #2f4a1c; margin: 12px 0 4px; page-break-after: avoid; }
+  p { margin: 4px 0 8px; }
+  ul, ol { margin: 4px 0 8px; padding-left: 22px; }
+  li { margin: 2px 0; }
+  b.ui { background: var(--olive); color: #fff; padding: 0 7px; border-radius: 6px; font-weight: 600; font-size: 9.6pt; white-space: nowrap; }
+  .shot { width: 100%; border-radius: 10px; border: 3px solid var(--olive-mid); display: block; margin: 6px 0 4px; }
+  .cap { font-size: 9pt; color: var(--muted); text-align: center; margin: 0 0 10px; }
+  .two { display: flex; gap: 10px; } .two > div { flex: 1; }
+  .two .shot { margin-bottom: 2px; }
+  table { width: 100%; border-collapse: collapse; margin: 6px 0 10px; font-size: 9.6pt; }
+  tr { page-break-inside: avoid; }
+  th { background: var(--olive-mid); color: #fff; text-align: left; padding: 5px 8px; }
+  td { border-bottom: 1px solid #e2e2d6; padding: 5px 8px; vertical-align: middle; }
+  td img.ic { width: 26px; height: 26px; object-fit: contain; vertical-align: middle; }
+  td img.item { width: 42px; height: 34px; object-fit: contain; vertical-align: middle; }
+  .tip { background: var(--teal-pale); border-left: 5px solid var(--teal); border-radius: 0 8px 8px 0; padding: 7px 12px; margin: 8px 0 10px; font-size: 9.8pt; page-break-inside: avoid; }
+  .tip b { color: #17707a; }
+  .warn { background: #fdf0e6; border-left: 5px solid #e0873a; border-radius: 0 8px 8px 0; padding: 7px 12px; margin: 8px 0 10px; font-size: 9.8pt; page-break-inside: avoid; }
+  .callouts { display: grid; grid-template-columns: 1fr 1fr; gap: 6px 14px; margin: 6px 0 10px; font-size: 9.7pt; }
+  .callouts div { display: flex; gap: 8px; align-items: flex-start; }
+  .callouts .n { flex: 0 0 22px; height: 22px; border-radius: 50%; background: var(--teal); color: #fff; font-weight: 700; display: grid; place-items: center; font-size: 9pt; }
+  .cover { height: 268mm; display: flex; flex-direction: column; justify-content: center; align-items: center; text-align: center; background: linear-gradient(#eaf7f8, #f3f4e3); border: 6px solid var(--olive); border-radius: 24px; }
+  .cover .logo { width: 82%; }
+  .cover .pets { display: flex; gap: 30px; align-items: flex-end; margin: 18px 0 10px; }
+  .cover .pets img { height: 190px; }
+  .cover .badge { background: var(--teal); color: #fff; padding: 5px 20px; border-radius: 999px; font-size: 13pt; letter-spacing: 3px; margin-top: 10px; }
+  .cover .sub { font-size: 17pt; color: var(--olive-dark); margin: 14px 0 4px; font-weight: 600; }
+  .cover .meta { color: var(--muted); font-size: 10.5pt; }
+  .toc { columns: 2; column-gap: 26px; font-size: 10.5pt; }
+  .toc div { break-inside: avoid; padding: 4px 0; border-bottom: 1px dotted #c9caa8; }
+  .toc span { display: inline-block; width: 26px; color: var(--teal); font-weight: 700; }
+  .route { border: 3px solid var(--rc); border-radius: 14px; padding: 10px 14px 8px; margin: 0 0 12px; page-break-inside: avoid; }
+  .route h2 { background: none; border: none; padding: 0; margin: 0 0 4px; color: var(--rc); font-size: 15pt; }
+  .route .forms { display: flex; gap: 6px; margin: 6px 0; }
+  .route .forms div { flex: 1; text-align: center; font-size: 8.4pt; line-height: 1.3; color: var(--muted); }
+  .route .forms img { height: 84px; max-width: 100%; object-fit: contain; display: block; margin: 0 auto 2px; }
+  .route .how { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 14px; font-size: 9.6pt; }
+  .route .how b { color: var(--rc); }
+  .chip { display: inline-block; background: var(--olive-pale); border: 1px solid var(--olive-mid); border-radius: 999px; padding: 0 8px; margin: 1px 2px; font-size: 9.2pt; }
+</style>
+</head>
+<body>
+
+<!-- ============ ปก ============ -->
+<div class="cover">
+  <img class="logo" src="../../assets/sprites/cover/logo.png" alt="">
+  <div class="badge">GAME GUIDE BOOK</div>
+  <div class="pets"><img src="../../assets/sprites/body/dog_baby.png" alt=""><img src="../../assets/sprites/body/cat_baby.png" alt=""></div>
+  <div class="sub">คู่มือการเล่น Paws &amp; Phases</div>
+  <div class="meta">วิธีเล่น · ส่วนต่าง ๆ ของหน้าจอ · ไอเทม · 7 สายวิวัฒนาการและเงื่อนไข · แชท · ควบคุมด้วยมือ</div>
+</div>
+
+<!-- ============ สารบัญ + เกมนี้คืออะไร ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">★</span>ยินดีต้อนรับสู่ Paws &amp; Phases</h1>
+<p><b>Paws &amp; Phases</b> คือเกมเลี้ยงหมาหรือแมวที่ <b>เปลี่ยนร่างตามวิธีที่เราเลี้ยง</b> ทุกวันในเกม เราเลือกได้ว่าจะให้อาหาร เล่นด้วย อาบน้ำ หรือให้นอน พอจบวัน AI จะดูว่าวันนั้นเลี้ยงแบบไหน แล้วให้สัตว์เติบโตไปตาม <b>สายวิวัฒนาการ</b> ที่ตรงกับนิสัยการเลี้ยงนั้น</p>
+<ul>
+  <li><b>2 สัตว์ให้เลือก:</b> หมา 🐶 หรือ แมว 🐱</li>
+  <li><b>7 สายวิวัฒนาการ</b> แต่ละสายมี <b>5 ร่าง</b> หน้าตาและนิสัยต่างกัน (รวม 58 ร่าง)</li>
+  <li><b>1 วันในเกม = 3 นาที</b> (ปรับเป็น 5, 7 หรือ 10 นาทีได้ในเมนู)</li>
+  <li><b>คุยกับสัตว์ได้เป็นภาษาไทย</b> ทั้งพิมพ์ พูดผ่านไมค์ หรือส่งอีโมจิ</li>
+  <li><b>เล่นด้วยมือผ่านกล้องได้</b> เหมือนแตะจอมือถือ</li>
+</ul>
+<h2>สารบัญ</h2>
+<div class="toc">
+  <div><span>1</span>เริ่มเกม</div>
+  <div><span>2</span>หน้าเลี้ยงสัตว์</div>
+  <div><span>3</span>ค่าสถานะและ Social</div>
+  <div><span>4</span>เมนู Grooming และไอเทม</div>
+  <div><span>5</span>อารมณ์ของสัตว์</div>
+  <div><span>6</span>วัน เวลา และ NEXT DAY</div>
+  <div><span>7</span>การวิวัฒนาการ</div>
+  <div><span>8</span>7 สายวิวัฒนาการ</div>
+  <div><span>9</span>Hint · Profile · Evolution Book</div>
+  <div><span>10</span>คุยกับสัตว์ (แชท)</div>
+  <div><span>11</span>ควบคุมด้วยมือผ่านกล้อง</div>
+  <div><span>12</span>เมนูและการบันทึกเกม</div>
+  <div><span>13</span>เคล็ดลับและคำถามที่พบบ่อย</div>
+</div>
+<div class="tip"><b>อ่านอย่างไร:</b> ชื่อปุ่มในเกมเป็นภาษาอังกฤษ ในคู่มือจะเขียนเป็นป้ายแบบนี้ <b class="ui">NEXT DAY</b> เพื่อให้หาบนหน้าจอได้ง่าย</div>
+</section>
+
+<!-- ============ 1 เริ่มเกม ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">1</span>เริ่มเกม</h1>
+<h2>หน้าปก</h2>
+<img class="shot" src="img/title.jpg" alt="">
+<div class="callouts">
+  <div><span class="n">1</span><span><b class="ui">START</b> เริ่มเลี้ยงสัตว์ตัวใหม่</span></div>
+  <div><span class="n">2</span><span><b class="ui">Continue</b> เล่นต่อจากไฟล์ที่บันทึกไว้ (จางอยู่ถ้ายังไม่มีเซฟ)</span></div>
+  <div><span class="n">3</span><span>ปุ่ม <b>มือ ✋</b> มุมขวาบน เปิดกล้องเพื่อเล่นด้วยมือ (ดูบทที่ 11)</span></div>
+  <div><span class="n">4</span><span>ปุ่ม <b>เมาส์ 🖱️</b> เล่นด้วยเมาส์ / แตะจอตามปกติ</span></div>
+</div>
+<h2>เลือกสัตว์และตั้งชื่อ</h2>
+<div class="two">
+  <div><img class="shot" src="img/breed.jpg" alt=""><div class="cap">กดเลือกหมาหรือแมว แล้วกด NEXT</div></div>
+  <div><img class="shot" src="img/name.jpg" alt=""><div class="cap">พิมพ์ชื่อ (ไม่เกิน 12 ตัวอักษร) แล้วกด START</div></div>
+</div>
+<ol>
+  <li>กดที่การ์ด <b>หมา</b> หรือ <b>แมว</b> (การ์ดที่เลือกจะเป็นกรอบสีเขียวเข้ม) แล้วกด <b class="ui">NEXT</b></li>
+  <li>พิมพ์ชื่อสัตว์ แล้วกด <b class="ui">START</b> หรือกด Enter (ถ้าไม่พิมพ์ จะใช้ชื่อ "Name")</li>
+  <li>เกมจะแสดงหน้า <b>Day 1</b> สั้น ๆ แล้วเข้าหน้าเลี้ยง</li>
+</ol>
+<div class="tip"><b>บันทึกอัตโนมัติ:</b> สัตว์ตัวใหม่จะถูกบันทึกลงไฟล์ว่างช่องแรกทันที (มีทั้งหมด 3 ไฟล์) และบันทึกเองตลอดการเล่น ถ้าไฟล์เต็มทั้ง 3 ช่อง แชทจะเตือนให้ไปเลือกไฟล์ที่จะเขียนทับเองใน <b class="ui">Menu</b> → <b class="ui">Save Game</b></div>
+</section>
+
+<!-- ============ 2 หน้าเลี้ยง ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">2</span>หน้าเลี้ยงสัตว์</h1>
+<p>หน้าที่ใช้เวลาเกือบทั้งเกม ด้านซ้ายคือสวนที่สัตว์อยู่ ด้านขวาคือแผงแชท</p>
+<img class="shot" src="img/chat.jpg" alt="">
+<div class="callouts">
+  <div><span class="n">1</span><span><b>รูปหัวสัตว์</b> (ซ้ายบน) กดเพื่อเปิดหน้า <b>Profile</b> อีโมจิมุมรูปบอกอารมณ์ตอนนี้</span></div>
+  <div><span class="n">2</span><span><b>ชื่อ + แถบสีชมพู</b> คือค่า <b>Social</b> (ความสนิท) เพิ่มขึ้นเมื่อคุยกัน</span></div>
+  <div><span class="n">3</span><span><b>กล่องค่าสถานะ 4 ช่อง</b> (ซ้าย) อิ่ม · สะอาด · สุข · พลัง กดเพื่อดูตัวเลข</span></div>
+  <div><span class="n">4</span><span><b>นาฬิกาวัน</b> (ซ้ายล่าง) บอกวันที่และเวลาที่เหลือของวัน</span></div>
+  <div><span class="n">5</span><span><b>ตัวสัตว์</b> เดินไปมาในสวน กดที่ตัวเพื่อ <b>ลูบหัว</b> 💗</span></div>
+  <div><span class="n">6</span><span><b>ฟองอารมณ์</b> ขึ้นเมื่อสัตว์ต้องการอะไรบางอย่าง เช่น 🍖 หิว</span></div>
+  <div><span class="n">7</span><span><b>ปุ่มด้านขวา 5 ปุ่ม</b> ดูตารางด้านล่าง</span></div>
+  <div><span class="n">8</span><span><b>แผงแชท</b> คุยกับสัตว์ (ดูบทที่ 10)</span></div>
+</div>
+<h2>ปุ่มด้านขวา</h2>
+<table>
+  <tr><th>ปุ่ม</th><th>ชื่อ</th><th>หน้าที่</th></tr>
+  <tr><td><img class="ic" src="../../assets/ui/icon_menu.png" alt=""></td><td><b class="ui">Menu</b></td><td>บันทึกเกม ตั้งค่าเวลา เสียง การควบคุมด้วยมือ และกลับหน้าปก</td></tr>
+  <tr><td><img class="ic" src="../../assets/ui/icon_book.png" alt=""></td><td><b class="ui">Evolution Book</b></td><td>หนังสือรวมสายวิวัฒนาการและร่างที่ค้นพบแล้ว</td></tr>
+  <tr><td><img class="ic" src="../../assets/ui/icon_restart.png" alt=""></td><td><b class="ui">Rebirth</b></td><td>เริ่มใหม่เป็นร่างแรก กดได้เมื่อถึงร่างที่ 5 เท่านั้น (ปุ่มจางอยู่จนกว่าจะกดได้)</td></tr>
+  <tr><td><img class="ic" src="../../assets/ui/icon_grooming.png" alt=""></td><td><b class="ui">Grooming</b></td><td>เมนูดูแลสัตว์: ให้อาหาร เล่น อาบน้ำ พักผ่อน</td></tr>
+  <tr><td><img class="ic" src="../../assets/sprites/cover/icon_hand.png" alt=""></td><td><b class="ui">Hand</b></td><td>เปิด/ปิดการควบคุมด้วยมือผ่านกล้อง (พื้นปุ่มเป็นสีฟ้าเมื่อเปิดอยู่)</td></tr>
+</table>
+<div class="tip"><b>กรอบสีเหลืองกระพริบ</b> คือสิ่งที่ AI แนะนำให้ทำตอนนี้ เริ่มจากกรอบรอบปุ่ม Grooming → พอเปิดเมนูจะกระพริบที่หมวด → แล้วที่ไอเทมที่ควรใช้ ทำตามกรอบเหลืองไปเรื่อย ๆ สัตว์จะสุขภาพดีเสมอ</div>
+<div class="tip"><b>ปุ่มหลอดไฟ 💡 (Hint)</b> จะขึ้นกลางด้านบนเมื่อสัตว์ถึงร่างที่ 3 ดูบทที่ 9</div>
+</section>
+
+<!-- ============ 3 ค่าสถานะ ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">3</span>ค่าสถานะและ Social</h1>
+<p>ค่าสถานะมี 4 ค่า แต่ละค่าอยู่ระหว่าง 0–100 และ <b>ลดลงเองตามเวลา</b> สีในกล่องบอกระดับ: <span class="chip" style="background:#d9efc6">เขียว = มากกว่า 60</span> <span class="chip" style="background:#fdeeb8">เหลือง = 31–60</span> <span class="chip" style="background:#f5c6c6">แดง = 30 หรือน้อยกว่า</span></p>
+<table>
+  <tr><th>ไอคอน</th><th>ค่า</th><th>ความหมาย</th><th>เพิ่มด้วย</th><th>ลดเร็วแค่ไหน</th></tr>
+  <tr><td><img class="ic" src="../../assets/ui/icon_food.png" alt=""></td><td><b>Fullness</b> (อิ่ม)</td><td>ความหิว ถ้าต่ำกว่า 20 สุขภาพจะลดเร็วขึ้น</td><td>Feed</td><td>เร็วที่สุด (หมดใน ~8 นาที)</td></tr>
+  <tr><td><img class="ic" src="../../assets/ui/icon_bath.png" alt=""></td><td><b>Clean</b> (สะอาด/สุขภาพ)</td><td>ความสะอาดและสุขภาพ ต่ำมาก = ป่วย</td><td>Care</td><td>ปานกลาง (หมดใน ~11 นาที)</td></tr>
+  <tr><td><img class="ic" src="../../assets/ui/icon_happy.png" alt=""></td><td><b>Happiness</b> (สุข)</td><td>ความสุข ถ้าไม่ได้สนใจเกิน 1 นาที จะลดเร็วขึ้น (เหงา)</td><td>Play, ลูบหัว, คุย</td><td>ปานกลาง (~13 นาที)</td></tr>
+  <tr><td><img class="ic" src="../../assets/ui/icon_energy.png" alt=""></td><td><b>Energy</b> (พลัง)</td><td>แรง ใช้ไปกับการเล่น ถ้าเหลือ 3 หรือน้อยกว่า สัตว์จะหลับเอง</td><td>Rest (งีบ/นอน)</td><td>ช้า (~17 นาที)</td></tr>
+</table>
+<h2>Social (แถบสีชมพู)</h2>
+<ul>
+  <li>บอกความสนิทระหว่างเรากับสัตว์ (0–100)</li>
+  <li><b>เพิ่ม:</b> คุยในแชท +3 ต่อข้อความ, ทำท่า 👍 ผ่านกล้อง +2</li>
+  <li><b>ลด:</b> ถ้าทั้งวันไม่คุยกันเลย จะลด 8 ตอนขึ้นวันใหม่</li>
+  <li>ยิ่งสนิท สัตว์ยิ่งตอบอ้อน ๆ เช่น ถาม "รักฉันไหม" จะตอบต่างกันตามระดับ</li>
+</ul>
+<div class="tip"><b>เวลาเดินเฉพาะตอนอยู่หน้าเลี้ยง:</b> ปิดเกม สลับแท็บ หรือเปิดเมนู/หนังสืออยู่ ค่าสถานะจะไม่ลด กลับมาเล่นต่อได้สบาย ๆ</div>
+</section>
+
+<!-- ============ 4 Grooming ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">4</span>เมนู Grooming และไอเทม</h1>
+<p>กด <b class="ui">Grooming</b> เพื่อเปิดแผงด้านบน เลือกหมวด แล้วกดไอเทมที่ต้องการ (กดได้ทุก 1 วินาที) ปุ่ม <b>←</b> กลับไปหน้าหมวด ปุ่ม <b>✕</b> ปิดเมนู ถ้ามีไอเทมมากกว่า 4 ชิ้น เลื่อนดูแถวถัดไปได้ด้วยล้อเมาส์หรือลากขึ้นลง</p>
+<div class="two">
+  <div><img class="shot" src="img/grooming.jpg" alt=""><div class="cap">หน้าเลือกหมวด</div></div>
+  <div><img class="shot" src="img/items.jpg" alt=""><div class="cap">หน้าไอเทมหมวด Feed</div></div>
+</div>
+<h2>🍔 Feed: อาหาร</h2>
+<table>
+  <tr><th></th><th>ไอเทม</th><th>ผล</th><th></th><th>ไอเทม</th><th>ผล</th></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/feed/3c489cdb-50b3-4e9e-8544-ee876917dde9.png" alt=""></td><td>Chicken Leg</td><td>อิ่ม +25 สุข +5</td><td><img class="item" src="../../assets/sprites/items/feed/dab57c89-a6a9-441e-9b4f-82628ff279e0.png" alt=""></td><td>Pet Food</td><td>อิ่ม +30 สุขภาพ +2</td></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/feed/c485b118-1381-4554-a5fd-87f4c8df074b.png" alt=""></td><td>Salmon</td><td>อิ่ม +22 สุขภาพ +6</td><td><img class="item" src="../../assets/sprites/items/feed/e16488d5-66e8-4289-b642-1ebdcea08507.png" alt=""></td><td>Veggies</td><td>อิ่ม +15 สุขภาพ +8</td></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/feed/11f4d024-844d-4bf1-99a6-a64a2969c6a9.png" alt=""></td><td>Bone Treat</td><td>อิ่ม +8 สุข +10</td><td><img class="item" src="../../assets/sprites/items/feed/293329de-b93b-4fae-b382-951248b23b0e.png" alt=""></td><td>Fish</td><td>อิ่ม +20 สุขภาพ +4</td></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/feed/e56b4fbd-e590-4626-b5f6-e56e085f3ff2.png" alt=""></td><td>Cake</td><td>อิ่ม +12 สุข +15 สุขภาพ −4</td><td><img class="item" src="../../assets/sprites/items/feed/ea53093a-552b-400a-942c-a5b1f2f015dd.png" alt=""></td><td>Canned Food</td><td>อิ่ม +28</td></tr>
+</table>
+<h2>⚽ Play: ของเล่น</h2>
+<table>
+  <tr><th></th><th>ไอเทม</th><th>ผล</th><th></th><th>ไอเทม</th><th>ผล</th></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/play/327350f9-8051-4939-9f3e-e3d0eaecbc35.png" alt=""></td><td>Chew Toy</td><td>สุข +15 พลัง −8</td><td><img class="item" src="../../assets/sprites/items/play/72a92ee4-1e96-42a8-9dce-0c162f061c31.png" alt=""></td><td>Feather Wand</td><td>สุข +20 พลัง −12</td></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/play/04fac8fc-4002-418a-a8d8-e8a9cf68621c.png" alt=""></td><td>Toy Mouse</td><td>สุข +16 พลัง −8</td><td><img class="item" src="../../assets/sprites/items/play/0b7d3dcf-3b99-44f7-b61e-3217cb67357a.png" alt=""></td><td>Paw Ring</td><td>สุข +18 พลัง −10</td></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/play/0cccd6a9-33f5-4d18-8e45-e90efc7369dc.png" alt=""></td><td>Teddy Bear</td><td>สุข +12 พลัง −4</td><td><img class="item" src="../../assets/sprites/items/play/4fd8e873-886d-45ca-9e94-d6bca8a84e26.png" alt=""></td><td>Yarn Ball</td><td>สุข +18 พลัง −10</td></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/play/9f9ebcda-60dc-4ddc-99b8-8990ad116c93.png" alt=""></td><td>Tennis Ball</td><td>สุข +25 พลัง −15 อิ่ม −6</td><td><img class="item" src="../../assets/sprites/items/play/e686b64e-92aa-42d0-858a-5cbb8100d642.png" alt=""></td><td>Cat Tower</td><td>สุข +22 พลัง −14</td></tr>
+</table>
+<h2>🛁 Care: ดูแลความสะอาด</h2>
+<table>
+  <tr><th></th><th>ไอเทม</th><th>ผล</th><th></th><th>ไอเทม</th><th>ผล</th></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/care/fe631855-7691-40a0-9a07-b8947bd432c5.png" alt=""></td><td>Soap</td><td>สะอาด +25 สุข +2</td><td><img class="item" src="../../assets/sprites/items/care/06f05f68-d37c-4306-829b-3d603bcdd519.png" alt=""></td><td>Brush</td><td>สะอาด +12 สุข +6</td></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/care/a074537e-af52-40e9-ae63-c67263471f30.png" alt=""></td><td>Conditioner</td><td>สะอาด +15</td><td><img class="item" src="../../assets/sprites/items/care/3e91d913-d791-4d9f-ace7-c5d980703413.png" alt=""></td><td>Toothbrush</td><td>สะอาด +10</td></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/care/9ad7bb54-d47a-467d-bfcd-098196da5894.png" alt=""></td><td>Shampoo</td><td>สะอาด +28</td><td><img class="item" src="../../assets/sprites/items/care/ec5aa4c4-f4da-473a-9055-17c30aadcec5.png" alt=""></td><td>Towel</td><td>สะอาด +8 สุข +4</td></tr>
+  <tr><td><img class="item" src="../../assets/sprites/items/care/522bb730-d8a4-473c-8e1f-56f77d8560d1.png" alt=""></td><td>Vitamins</td><td>สุขภาพ +20 (ใช้ตอนป่วย)</td><td><img class="item" src="../../assets/sprites/items/care/fcea3bfa-00fc-44a1-9921-0d35c3040386.png" alt=""></td><td>Cream</td><td>สะอาด +14</td></tr>
+</table>
+<h2>💤 Rest: พักผ่อน</h2>
+<div class="two">
+  <div><img class="shot" src="img/rest.jpg" alt=""></div>
+  <div>
+    <ul>
+      <li><b class="ui">Nap</b> งีบ 30 วินาที แล้วตื่นเอง</li>
+      <li><b class="ui">Sleep</b> นอนยาวจนกว่าจะกดปลุก หรือจนขึ้นวันใหม่ (ตื่นมาพลังเต็ม)</li>
+      <li>ระหว่างหลับ พลังเพิ่มขึ้น ฉากจะมืดลง และใช้ไอเทมอื่นไม่ได้</li>
+      <li>กดการ์ดเดิมซ้ำ (ขึ้นคำว่า <b>Wake up</b>) เพื่อปลุก ถ้าปลุกตอนพลังยังไม่ถึง 50 สัตว์จะงอแง</li>
+    </ul>
+  </div>
+</div>
+<div class="warn"><b>ข้อควรระวัง:</b> ให้อาหารตอนอิ่มเกิน 90 สัตว์จะเสียความสุขและสุขภาพ · ให้วิตามินตอนไม่ป่วยจะเสียความสุข · เล่นไม่ได้ถ้าพลังต่ำกว่า 15 (ให้พักก่อน)</div>
+</section>
+
+<!-- ============ 5 อารมณ์ ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">5</span>อารมณ์ของสัตว์</h1>
+<p>AI ดูค่าสถานะตลอดเวลาแล้วตัดสินว่าสัตว์รู้สึกอย่างไร อารมณ์แสดงที่ <b>อีโมจิมุมรูปหัว</b> <b>ฟองเหนือตัว</b> <b>หัวแชท</b> และ <b>ท่าทาง</b> ของสัตว์ บางครั้งสัตว์จะพูดเรียกเราในแชทเอง</p>
+<table>
+  <tr><th>อารมณ์</th><th>เกิดเมื่อ</th><th>ท่าทาง</th><th>ควรทำ</th></tr>
+  <tr><td>😆 Happy</td><td>ทุกค่าสูงและมีความสุข</td><td>กระโดดดีใจ มีหัวใจลอย</td><td>เล่นและคุยต่อได้เลย</td></tr>
+  <tr><td>🙂 Fine</td><td>สบายดี ไม่มีอะไรต้องการ</td><td>ท่าประจำร่าง</td><td>ลองคุยกัน</td></tr>
+  <tr><td>🍖 Hungry</td><td>อิ่มต่ำกว่า 40</td><td>ส่ายตัว</td><td>Feed</td></tr>
+  <tr><td>🥺 Lonely</td><td>ไม่ได้สนใจนาน และไม่ค่อยมีความสุข</td><td>มองหาซ้ายขวา</td><td>เล่น ลูบหัว หรือคุย</td></tr>
+  <tr><td>😢 Sad</td><td>สุขต่ำกว่า 35</td><td>ตัวห่อ สีซีด มีหยดน้ำตา</td><td>Play</td></tr>
+  <tr><td>🥱 Tired</td><td>พลังต่ำกว่า 30</td><td>หาว ตัวเทา</td><td>Rest</td></tr>
+  <tr><td>🤒 Sick / Dirty</td><td>สะอาดต่ำกว่า 35</td><td>ตัวสั่น สีเขียว มีเชื้อโรคลอย</td><td>Care (ป่วยหนักใช้ Vitamins)</td></tr>
+  <tr><td>😴 Sleeping</td><td>กำลังหลับ</td><td>เอียงตัว หายใจช้า มี 💤</td><td>ปล่อยให้นอน</td></tr>
+</table>
+<div class="tip"><b>ท่าประจำร่าง:</b> พอเข้าสายแล้ว สัตว์จะเดินและยืนตามนิสัยของสาย เช่น สาย Sleepy ลอยไปมาช้า ๆ สาย Playful วิ่งเร็วและเบ่งกล้าม สาย Royal เดินสง่างาม</div>
+</section>
+
+<!-- ============ 6 วัน ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">6</span>วัน เวลา และ NEXT DAY</h1>
+<div class="two">
+  <div><img class="shot" src="img/nextday.jpg" alt=""><div class="cap">หมดวันแล้ว ปุ่ม NEXT DAY ขึ้นที่มุมซ้ายล่าง</div></div>
+  <div><img class="shot" src="img/day.jpg" alt=""><div class="cap">หน้าขึ้นวันใหม่</div></div>
+</div>
+<ul>
+  <li><b>1 วัน = 3 นาที</b> (เปลี่ยนเป็น 5 / 7 / 10 นาทีได้ใน <b class="ui">Menu</b> → <b class="ui">Day Length</b>)</li>
+  <li><b>นาฬิกาวัน</b> มุมซ้ายล่างบอก "Day 2 · 1:50" = วันที่ 2 เหลือ 1 นาที 50 วินาที</li>
+  <li><b>เร่งเวลา</b> x1 / x2 / x5 / x10 ได้ใน <b class="ui">Menu</b> → <b class="ui">Time Speed</b></li>
+  <li>เมื่อ <b>หมดวัน</b>: ทุกอย่างหยุดนิ่ง ใช้ไอเทมไม่ได้ ปุ่ม <b class="ui">NEXT DAY</b> จะขึ้นมาแทนนาฬิกา</li>
+  <li>กด <b class="ui">NEXT DAY</b> → AI ตัดสินการเลี้ยงของวันนั้น → ถ้าเปลี่ยนร่างจะมีฉากวิวัฒนาการ → เริ่มวันใหม่</li>
+</ul>
+<div class="tip"><b>สำคัญ:</b> การตัดสินดูการเลี้ยงของ <b>วันนั้นวันเดียว</b> ถ้าอยากได้สายไหน ต้องเลี้ยงแนวนั้นให้ชัดตลอดทั้งวัน</div>
+</section>
+
+<!-- ============ 7 วิวัฒนาการ ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">7</span>การวิวัฒนาการ</h1>
+<h2>แต้มการดูแล</h2>
+<p>ทุกครั้งที่ใช้ไอเทม เกมจะเก็บ "แต้ม" ไว้ใน 4 ด้าน แล้วดูตอนจบวันว่าแต่ละด้านคิดเป็นกี่ % ของทั้งหมด</p>
+<table>
+  <tr><th>ด้าน</th><th>ได้แต้มจาก</th></tr>
+  <tr><td>🍔 <b>Feed</b></td><td>ให้อาหาร ครั้งละ 5–15 แต้ม (ยิ่งหิว ยิ่งได้มาก) ตอนอิ่มเกิน 90 ได้ 3 แต้ม</td></tr>
+  <tr><td>⚽ <b>Play</b></td><td>เล่น ครั้งละ 5–15 แต้ม</td></tr>
+  <tr><td>🛁 <b>Care</b></td><td>อาบน้ำ/ดูแล ครั้งละ 5–15 แต้ม ตอนสะอาดเกิน 90 ได้ 4 แต้ม</td></tr>
+  <tr><td>💤 <b>Rest</b></td><td>กดงีบหรือนอน 3–15 แต้ม และได้เพิ่มเองตลอดเวลาที่นอน (นอนยาวด้วย Sleep ได้มากกว่างีบ)</td></tr>
+  <tr><td>💬 <b>Chat</b></td><td>นับจำนวนข้อความที่คุยในวันนั้น (ใช้กับสาย Leader)</td></tr>
+</table>
+<h2>ขั้นตอนการเติบโต</h2>
+<ol>
+  <li><b>ร่าง 1 Newborn:</b> ทุกตัวเริ่มที่นี่ จบวันแรกถ้าเลี้ยงตรงแนวสายไหน จะได้ <b>ร่าง 2 ของสายนั้น</b> ถ้าไม่ตรงสายไหนเลย จะยังเป็น Newborn ต่อ (ไม่มีบทลงโทษ)</li>
+  <li><b>ร่าง 2–4:</b> แต่ละวันถ้าเลี้ยงตรงแนว <b>สายเดิม</b> จะขึ้น 1 ร่าง (วันละไม่เกิน 1 ร่าง)</li>
+  <li><b>ร่าง 5 Ultimate:</b> ร่างสุดท้าย ชื่อสายถูกเปิดเผยในหนังสือ ร่างไม่เปลี่ยนและไม่ถอยอีก กด <b class="ui">Rebirth</b> เพื่อเริ่มใหม่ได้ (หนังสือยังอยู่)</li>
+</ol>
+<h2>ถ้าเลี้ยงไม่ตรงทาง</h2>
+<table>
+  <tr><th>ผลตอนจบวัน</th><th>เกิดอะไรขึ้น</th></tr>
+  <tr><td>✅ ตรงเป้าของสาย</td><td>ขึ้น 1 ร่าง</td></tr>
+  <tr><td>🙂 เกือบถึงเป้า</td><td>คงร่างเดิม ไม่นับว่าพลาด</td></tr>
+  <tr><td>⚠️ พลาดเป้า</td><td>แชทจะเตือน ถ้าพลาด <b>ติดกัน</b> 2 วัน (ร่าง 2–3) หรือ 3 วัน (ร่าง 4) จะ <b>ถอยกลับ 1 ร่าง</b></td></tr>
+</table>
+<h2>ฉากวิวัฒนาการ</h2>
+<img class="shot" src="img/evolution.jpg" alt="">
+<p>หลังเปลี่ยนร่าง จะเห็น <b>ผลวิเคราะห์ของ AI</b>: เหตุผลที่ได้ร่างนี้ และแถบสัดส่วน Food / Play / Care / Rest ของเมื่อวาน ใช้ดูว่าเลี้ยงไปทางไหนมากที่สุด ชื่อสายจะแสดงเป็น <b>???</b> จนกว่าจะเลี้ยงสายนั้นถึงร่างที่ 5</p>
+</section>
+
+<!-- ============ 8 สายวิวัฒนาการ ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">8</span>7 สายวิวัฒนาการ</h1>
+<p>ภาพแสดงร่าง 2–5 ของหมา (บน) แต่ละสายของแมวก็มีหน้าตาคล้ายกันในแบบแมว เงื่อนไขเขียนเป็น <b>"ร่าง 1–2 / ร่าง 3 ขึ้นไป"</b> เพราะช่วงแรกเกณฑ์จะง่ายกว่า</p>
+
+<div class="route" style="--rc:#d4a106">
+  <h2>👑 Royal: สายสมดุล</h2>
+  <div class="forms"><div><img src="../../assets/sprites/body/dog_royal_2.png" alt="">Dapper Noble</div><div><img src="../../assets/sprites/body/dog_royal_3.png" alt="">Royal Heir</div><div><img src="../../assets/sprites/body/dog_royal_4.png" alt="">Regal Aristocrat</div><div><img src="../../assets/sprites/body/dog_royal_5.png" alt="">Sovereign Monarch</div></div>
+  <div class="how"><div><b>เล่นยังไง:</b> สลับ ให้อาหาร → เล่น → อาบน้ำ → งีบ ให้ครบทุกอย่างพอ ๆ กันทั้งวัน</div><div><b>เงื่อนไข:</b> ทุกด้าน (Feed/Play/Care/Rest) อยู่ระหว่าง 8–45% / 10–45% และแต้มรวมอย่างน้อย 24 / 40</div><div><b>นิสัย:</b> สุภาพสง่างาม ร่างสูงพูดแบบกษัตริย์ "ข้า/เจ้า… จงจดจำไว้ 👑"</div><div><b>ชอบ:</b> ชายามบ่าย สวนดอกไม้ ของสีทอง</div></div>
+</div>
+
+<div class="route" style="--rc:#2f3e75">
+  <h2>🎩 Leader: สายลับ</h2>
+  <div class="forms"><div><img src="../../assets/sprites/body/dog_leader_2.png" alt="">Agent Trainee</div><div><img src="../../assets/sprites/body/dog_leader_3.png" alt="">Elite Strategist</div><div><img src="../../assets/sprites/body/dog_leader_4.png" alt="">Prominent Statesman</div><div><img src="../../assets/sprites/body/dog_leader_5.png" alt="">Prime Minister Icon</div></div>
+  <div class="how"><div><b>เล่นยังไง:</b> เลี้ยงสมดุลแบบ Royal <b>และ</b> คุยแชทเยอะ ๆ ทุกวัน</div><div><b>เงื่อนไข:</b> สมดุลแบบ Royal + คุยอย่างน้อย 4 / 8 ข้อความต่อวัน</div><div><b>นิสัย:</b> นักวางแผน ร่างสูงกล่าวสุนทรพจน์ถึง "พี่น้องประชาชน" 🎩</div><div><b>หมายเหตุ:</b> ซ่อนอยู่ในหนังสือจนกว่าจะปลดล็อกได้เอง</div></div>
+</div>
+
+<div class="route" style="--rc:#7c5cd6">
+  <h2>💤 Sleepy: สายขี้เซา</h2>
+  <div class="forms"><div><img src="../../assets/sprites/body/dog_sleepy_2.png" alt="">Drowsy Hatchling</div><div><img src="../../assets/sprites/body/dog_sleepy_3.png" alt="">Coiling Cub</div><div><img src="../../assets/sprites/body/dog_sleepy_4.png" alt="">Mystic Serpent-Form</div><div><img src="../../assets/sprites/body/dog_sleepy_5.png" alt="">Celestial Dragon Form</div></div>
+  <div class="how"><div><b>เล่นยังไง:</b> กด <b class="ui">Sleep</b> ให้นอนทั้งวัน หรืองีบบ่อย ๆ อย่าปลุกไปทำอย่างอื่น</div><div><b>เงื่อนไข:</b> Rest อย่างน้อย 40% / 50% และ Feed, Play, Care แต่ละอย่างไม่เกิน 30% / 20%</div><div><b>นิสัย:</b> หาวตลอด พูดไปหลับไป ร่างสูงพูดเหมือนมังกรโบราณ</div><div><b>ชอบ:</b> นมอุ่น ๆ เมฆนุ่ม ๆ การงีบยาว ๆ</div></div>
+</div>
+</section>
+
+<section class="page">
+<div class="route" style="--rc:#e8873a">
+  <h2>🐷 Gluttony: สายตะกละ</h2>
+  <div class="forms"><div><img src="../../assets/sprites/body/dog_gluttony_2.png" alt="">Chubby Eater</div><div><img src="../../assets/sprites/body/dog_gluttony_3.png" alt="">Gluttonous Form</div><div><img src="../../assets/sprites/body/dog_gluttony_4.png" alt="">Insatiable Beast</div><div><img src="../../assets/sprites/body/dog_gluttony_5.png" alt="">Demon Lord of Gluttony</div></div>
+  <div class="how"><div><b>เล่นยังไง:</b> ให้อาหารอย่างเดียว ไม่เล่น ไม่อาบน้ำ (ให้นอนพักได้)</div><div><b>เงื่อนไข:</b> นับเฉพาะ Feed/Play/Care: Feed มากที่สุดและอย่างน้อย 35% / 45%, Play กับ Care ไม่เกิน 30% / 20%</div><div><b>นิสัย:</b> พูดถึงของกินตลอด ร่างสูงเป็นจอมตะกละสั่งให้นำอาหารมาถวาย</div><div><b>ระวัง:</b> กินจนอิ่มเกินบ่อย ๆ สัตว์จะป่วยง่าย</div></div>
+</div>
+
+<div class="route" style="--rc:#22a6b3">
+  <h2>🧼 Self-Care: สายรักความสะอาด</h2>
+  <div class="forms"><div><img src="../../assets/sprites/body/dog_selfcare_2.png" alt="">Hygiene Learner</div><div><img src="../../assets/sprites/body/dog_selfcare_3.png" alt="">Bubble-Kissed Form</div><div><img src="../../assets/sprites/body/dog_selfcare_4.png" alt="">Lathering Form</div><div><img src="../../assets/sprites/body/dog_selfcare_5.png" alt="">Pure Soap Sovereign</div></div>
+  <div class="how"><div><b>เล่นยังไง:</b> อาบน้ำ/ดูแลอย่างเดียว ไม่ให้ขนม ไม่เล่น (ให้นอนพักได้)</div><div><b>เงื่อนไข:</b> นับเฉพาะ Feed/Play/Care: Care มากที่สุดและอย่างน้อย 35% / 45%, Play กับ Feed ไม่เกิน 30% / 20%</div><div><b>นิสัย:</b> ร่าเริง หอมฟุ้ง ร่างสูงไม่ยอมให้มือสกปรกแตะตัว</div><div><b>ชอบ:</b> ฟองสบู่ ผลไม้สด ขนเงางาม</div></div>
+</div>
+
+<div class="route" style="--rc:#e0533a">
+  <h2>🏋️ Playful: สายฟิต</h2>
+  <div class="forms"><div><img src="../../assets/sprites/body/dog_playful_2.png" alt="">Energetic Rookie</div><div><img src="../../assets/sprites/body/dog_playful_3.png" alt="">Fledgling Brawler</div><div><img src="../../assets/sprites/body/dog_playful_4.png" alt="">Powerhouse Beast</div><div><img src="../../assets/sprites/body/dog_playful_5.png" alt="">Apex Muscle Icon</div></div>
+  <div class="how"><div><b>เล่นยังไง:</b> เล่นเยอะ ๆ พอเหนื่อยให้งีบ แล้วเล่นต่อ ไม่ให้อาหาร ไม่อาบน้ำ</div><div><b>เงื่อนไข:</b> นับเฉพาะ Feed/Play/Care: Play มากที่สุดและอย่างน้อย 35% / 45%, Care กับ Feed ไม่เกิน 30% / 20%</div><div><b>นิสัย:</b> พลังเยอะ เสียงดัง ร่างสูงเป็นพี่ชายนักกล้ามคุยเรื่องโปรตีน 💪</div><div><b>ชอบ:</b> วิ่ง ยกเวท อกไก่</div></div>
+</div>
+
+<div class="route" style="--rc:#6b7280">
+  <h2>👽 Neglect: สายถูกทอดทิ้ง</h2>
+  <div class="forms"><div><img src="../../assets/sprites/body/dog_neglect_2.png" alt="">Neglected Stalker</div><div><img src="../../assets/sprites/body/dog_neglect_3.png" alt="">Emaciated Mutant</div><div><img src="../../assets/sprites/body/dog_neglect_4.png" alt="">Hybrid Alien-Beast</div><div><img src="../../assets/sprites/body/dog_neglect_5.png" alt="">Apex Alien Entity</div></div>
+  <div class="how"><div><b>เล่นยังไง:</b> แทบไม่ดูแลเลยทั้งวัน ปล่อยให้เวลาผ่านไป</div><div><b>เงื่อนไข:</b> แต้มการดูแลรวมทั้งวันน้อยกว่า 15</div><div><b>นิสัย:</b> เงียบ เหงา พูดแผ่ว ร่างสูงพูดภาษาต่างดาวทั้งประโยค</div><div><b>หมายเหตุ:</b> ระบบตรวจสายนี้เป็นอันดับแรก ถ้าดูแลน้อยมาก จะได้สายนี้ก่อนสายอื่น</div></div>
+</div>
+<div class="tip"><b>ถ้าผ่านหลายสายพร้อมกัน:</b> ตอนเลือกสายครั้งแรก (ร่าง 1 → 2) ระบบตรวจตามลำดับ Neglect → Leader → Royal → Sleepy → Gluttony → Self-Care → Playful แล้วใช้สายแรกที่ผ่าน</div>
+</section>
+
+<!-- ============ 9 Hint Profile Book ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">9</span>Hint · Profile · Evolution Book</h1>
+<div class="two">
+  <div><img class="shot" src="img/hint.jpg" alt=""><div class="cap">Hint (ปุ่มหลอดไฟ) ขึ้นตั้งแต่ร่างที่ 3</div></div>
+  <div><img class="shot" src="img/profile.jpg" alt=""><div class="cap">Profile (กดรูปหัวสัตว์)</div></div>
+</div>
+<ul>
+  <li><b>Hint</b> บอกวิธีเลี้ยงให้ถึงร่างถัดไปของสายตัวเอง และบอกว่า <b>วันนี้เลี้ยงตรงทางหรือยัง</b> (✅ หรือ ⚠️) ส่วน <b>Stats Recommendation</b> บอกระดับค่าสถานะที่เหมาะกับสายนี้ (High / Mid / Low)</li>
+  <li><b>Profile</b> ดูชื่อ พันธุ์ ร่าง ค่า Social และค่าสถานะทั้ง 4 แบบละเอียด</li>
+</ul>
+<h2>Evolution Book</h2>
+<div class="two">
+  <div><img class="shot" src="img/book.jpg" alt=""><div class="cap">หน้า 1: รายชื่อสาย (สายที่ยังไม่สำเร็จเป็น ???)</div></div>
+  <div><img class="shot" src="img/bookpage.jpg" alt=""><div class="cap">หน้า 2: ร่างทั้ง 5 ของสาย และคำอธิบาย</div></div>
+</div>
+<ul>
+  <li><b>หน้า 1</b> เลื่อนดูรายชื่อสายด้วยล้อเมาส์หรือลาก สายจะ <b>ปลดล็อก</b> (เห็นชื่อและภาพแบนเนอร์ กดเข้าไปดูได้) เมื่อเคยเลี้ยงถึงร่างที่ 5 ของสายนั้น</li>
+  <li><b>หน้า 2</b> กดลูกศรซ้าย/ขวา (หรือปุ่มลูกศรบนคีย์บอร์ด) เพื่อดูร่าง 1–5 <b>เลื่อนวนได้</b>: ร่าง 1 กดซ้ายจะไปร่าง 5 ร่างที่ยังไม่เคยเจอจะเป็นเงามืด</li>
+  <li><b>Description</b> บอก ขั้นร่าง ชื่อร่าง และข้อมูล About · Personality · Loves · Habit · How it grows (เลื่อนกล่องได้ถ้าข้อความยาว)</li>
+</ul>
+</section>
+
+<!-- ============ 10 แชท ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">10</span>คุยกับสัตว์ (แชท)</h1>
+<p>แผงด้านขวาใช้คุยกับสัตว์ได้ตลอดตอนอยู่หน้าเลี้ยง สัตว์ตอบเป็น <b>ภาษาไทย</b> ตามอารมณ์ ค่าสถานะ ความสนิท และ <b>นิสัยของร่างปัจจุบัน</b></p>
+<table>
+  <tr><th>ช่องทาง</th><th>วิธีใช้</th></tr>
+  <tr><td>⌨️ พิมพ์</td><td>พิมพ์ในช่อง <i>Type your message...</i> แล้วกด Enter หรือปุ่มส่ง</td></tr>
+  <tr><td>🎤 พูด</td><td>ตอนช่องพิมพ์ว่าง ปุ่มขวาเป็นไมโครโฟน กดแล้วพูดภาษาไทย (ใช้ได้ใน Chrome / Edge)</td></tr>
+  <tr><td>☰ ประโยคลัด</td><td>ปุ่มมุมขวาบนของแผง มีประโยคสำเร็จรูป เช่น "หิวไหม?" "ไปเล่นกัน!"</td></tr>
+  <tr><td>😁 อีโมจิ</td><td>ปุ่มซ้ายของช่องพิมพ์ ส่งอีโมจิอย่างเดียวได้ สัตว์จะตอบตามความหมาย เช่น ❤️ เขิน, 🍖 อยากกิน, ⚽ ชวนเล่น</td></tr>
+</table>
+<h2>ลองพูดแบบนี้</h2>
+<p>
+  <span class="chip">สวัสดี</span><span class="chip">หิวไหม?</span><span class="chip">ทำอะไรอยู่</span><span class="chip">ง่วงไหม</span><span class="chip">ไปเล่นกัน!</span><span class="chip">อาบน้ำกัน</span><span class="chip">รักฉันไหม</span><span class="chip">เหงาไหม</span><span class="chip">จะโตเป็นอะไร?</span><span class="chip">ชอบกินอะไร</span><span class="chip">งานอดิเรกคืออะไร</span><span class="chip">เล่ามุกหน่อย</span><span class="chip">ร้องเพลงให้ฟัง</span><span class="chip">กี่โมงแล้ว</span><span class="chip">12+5 เท่าไหร่</span><span class="chip">วันนี้เหนื่อยจัง</span><span class="chip">ฝันดีนะ</span><span class="chip">❤️</span><span class="chip">😂</span><span class="chip">🍖</span>
+</p>
+<ul>
+  <li><b>คุยต่อเนื่อง:</b> ถ้าสัตว์ถาม เช่น "ไปเล่นกันไหม?" ตอบ "ได้" หรือ "ไม่เอา" สัตว์จะคุยต่อเรื่องเดิม</li>
+  <li><b>ถามเรื่องร่าง:</b> พิมพ์ "จะโตเป็นอะไร?" สัตว์จะบอกว่าวันนี้เลี้ยงตรงทางไหม (แต่ไม่บอกชื่อสาย)</li>
+  <li><b>ข้อความใต้คำตอบ</b> (intent · mood) บอกว่า AI เข้าใจข้อความเป็นเรื่องอะไร และสัตว์อารมณ์อะไร</li>
+  <li><b>ตอนหลับ</b> สัตว์จะตอบแบบละเมอ</li>
+  <li>การคุยทุกข้อความเพิ่ม <b>Social +3</b> และนับเป็นการคุยสำหรับสาย Leader</li>
+</ul>
+<div class="tip"><b>นิสัยเปลี่ยนตามร่าง:</b> ร่างแรกพูดเหมือนเด็กมีเสียง โฮ่ง/เหมียว ร่าง 2–3 เริ่มมีนิสัยของสาย ร่าง 4–5 นิสัยชัดเต็มที่ เช่น สาย Royal ใช้ "ข้า/เจ้า" สาย Leader ใช้ "ผม" แถลงนโยบาย และสาย Neglect ร่างสูงพูดภาษาต่างดาว</div>
+</section>
+
+<!-- ============ 11 มือ ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">11</span>ควบคุมด้วยมือผ่านกล้อง</h1>
+<p>เล่นได้โดยไม่ต้องจับเมาส์ ใช้มือหน้าเว็บแคมแทน บนจอจะมี <b>ถุงมือเล็ก ๆ</b> ลอยตามมือ กดปุ่มอะไรก็ได้เหมือนแตะจอมือถือ ภาพจากกล้อง <b>ประมวลผลในเครื่องเท่านั้น</b> ไม่ส่งไปที่ใด</p>
+<h2>เปิดใช้งาน</h2>
+<ol>
+  <li>กดปุ่ม <b>มือ ✋</b> ที่หน้าปก หรือปุ่ม <b class="ui">Hand</b> ด้านขวาของหน้าเลี้ยง</li>
+  <li>อนุญาตให้เบราว์เซอร์ใช้กล้อง (ใช้ได้เมื่อเปิดผ่านลิงก์ https หรือในเครื่อง)</li>
+  <li>ครั้งแรกจะมี <b>หน้าสอนเล่น 3 ขั้น</b> ทำตามได้เลย หรือกด Skip เปิดดูใหม่ได้ที่ปุ่ม <b>?</b> ในแผงกล้อง</li>
+</ol>
+<h2>ท่ามือ</h2>
+<table>
+  <tr><th>ท่า</th><th>ผล</th></tr>
+  <tr><td>✋ แบมือแล้วขยับ</td><td>เลื่อนถุงมือ (ถุงมือตามกลางฝ่ามือ)</td></tr>
+  <tr><td>✊ กำมือ แล้วแบ</td><td><b>กดปุ่ม</b> (ตอนกำ ถุงมือหยุดนิ่งแป๊บนึง กันเลื่อนหลุดปุ่ม)</td></tr>
+  <tr><td>✊ กำค้างแล้วขยับ</td><td>ลาก เช่น เลื่อนรายการไอเทม (ถุงมือเรืองแสงสีเหลือง)</td></tr>
+  <tr><td>⏳ ชี้ค้างบนปุ่ม</td><td>วงกลมสีฟ้าค่อย ๆ เต็ม แล้วกดให้เอง (1 วินาที หรือ 0.7 วินาทีในโหมด Easy)</td></tr>
+  <tr><td>🤚 วางฝ่ามือบนตัวสัตว์</td><td>ลูบหัว 💗</td></tr>
+  <tr><td>✌️ ชูสองนิ้วค้าง</td><td>ทักทาย สัตว์กระโดดดีใจ</td></tr>
+  <tr><td>👍 ยกนิ้วโป้งค้าง</td><td>ชม สัตว์ดีใจ Social +2 (ได้ทุก 8 วินาที)</td></tr>
+</table>
+<h2>แผงกล้อง (ใต้หัวแชท)</h2>
+<ul>
+  <li><b>จุดสี:</b> เขียว = เห็นมือ · เหลือง = ยังไม่เห็นมือ · แดง = กล้องใช้ไม่ได้</li>
+  <li><b>แถวไอคอน ✋ ✊ ✌️ 👍</b> ไอคอนที่สว่างคือท่าที่ระบบเห็นอยู่</li>
+  <li>ปุ่ม <b>?</b> หน้าสอนเล่น · <b>👁</b> ซ่อน/แสดงภาพกล้อง · <b>✕</b> ปิดการควบคุมด้วยมือ</li>
+</ul>
+<div class="tip"><b>ถ้าใช้ยาก:</b> ไปที่ <b class="ui">Menu</b> ตั้ง <b class="ui">Hand: Easy</b> ถุงมือจะนิ่งขึ้นและไม่ต้องขยับแขนมาก · ถ้าปุ่มถูกกดเองบ่อยเกินไป ปิด <b class="ui">Dwell: OFF</b> · นั่งห่างกล้องประมาณหนึ่งช่วงแขน ให้เห็นมือทั้งมือในที่ที่มีแสงพอ</div>
+</section>
+
+<!-- ============ 12 เมนูและเซฟ ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">12</span>เมนูและการบันทึกเกม</h1>
+<div class="two">
+  <div><img class="shot" src="img/menu.jpg" alt=""><div class="cap">Menu</div></div>
+  <div><img class="shot" src="img/slots.jpg" alt=""><div class="cap">Load Game (กด Continue ที่หน้าปก)</div></div>
+</div>
+<h2>Menu</h2>
+<table>
+  <tr><th>ปุ่ม</th><th>หน้าที่</th></tr>
+  <tr><td><b class="ui">Resume</b></td><td>กลับไปเล่นต่อ</td></tr>
+  <tr><td><b class="ui">Save Game</b></td><td>เลือกไฟล์ที่จะบันทึก หรือย้ายไปไฟล์อื่น (บันทึกแล้วจะบันทึกอัตโนมัติต่อไป)</td></tr>
+  <tr><td><b class="ui">Day Length</b></td><td>ความยาว 1 วัน: 3 / 5 / 7 / 10 นาที</td></tr>
+  <tr><td><b class="ui">Time Speed</b></td><td>เร่งเวลา x1 / x2 / x5 / x10</td></tr>
+  <tr><td><b class="ui">Music</b> · <b class="ui">Sound</b></td><td>เปิด/ปิดเพลงพื้นหลังและเสียงเอฟเฟกต์</td></tr>
+  <tr><td><b class="ui">Hand</b> · <b class="ui">Dwell</b></td><td>ความไวของมือ (Normal / Easy) และการชี้ค้างเพื่อกด (ON / OFF)</td></tr>
+  <tr><td><b class="ui">Main Menu</b></td><td>กลับหน้าปก (บันทึกให้ก่อนออก)</td></tr>
+</table>
+<h2>ไฟล์เซฟ 3 ไฟล์</h2>
+<ul>
+  <li>แต่ละไฟล์แสดง ชื่อ ร่าง ค่า Social วัน เวลาที่เล่น และเวลาที่บันทึกล่าสุด</li>
+  <li><b class="ui">LOAD</b> เล่นต่อ (หรือกดการ์ดที่เลือกอยู่ซ้ำ) · <b class="ui">COPY</b> คัดลอกไปอีกไฟล์ (กด COPY แล้วเลือกไฟล์ปลายทาง) · <b class="ui">CLEAR</b> ลบไฟล์ (ถามยืนยันก่อน) · <b class="ui">BACK</b> กลับ</li>
+  <li>เกม <b>บันทึกอัตโนมัติ</b> ทุก 5 วินาที ทุกครั้งที่ใช้ไอเทม ขึ้นวันใหม่ และตอนปิดหน้า</li>
+</ul>
+<div class="warn"><b>เซฟอยู่ในเบราว์เซอร์:</b> เซฟเก็บในเบราว์เซอร์ของเครื่องที่เล่น เปิดคนละเบราว์เซอร์ (เช่น Chrome กับ Edge) หรือคนละลิงก์ จะเป็นเซฟคนละชุด · โหมดไม่ระบุตัวตนจะลบเซฟเมื่อปิดหน้าต่าง · การล้างข้อมูลเบราว์เซอร์จะลบเซฟด้วย</div>
+</section>
+
+<!-- ============ 13 เคล็ดลับ ============ -->
+<section class="page">
+<h1 class="ch"><span class="num">13</span>เคล็ดลับและคำถามที่พบบ่อย</h1>
+<h2>เคล็ดลับ</h2>
+<ul>
+  <li><b>ตั้งใจเลี้ยงแนวเดียวทั้งวัน</b> แล้วดูผลวิเคราะห์ในฉากวิวัฒนาการว่าสัดส่วนเป็นอย่างไร</li>
+  <li><b>ใช้ Hint</b> ตั้งแต่ร่าง 3 เพื่อเช็กว่าวันนี้เลี้ยงตรงทางหรือยัง ก่อนกด NEXT DAY</li>
+  <li><b>อยากรู้ว่าตอนนี้ควรทำอะไร</b> ดูกรอบสีเหลืองกระพริบ หรือพิมพ์ถาม "อยากทำอะไร?"</li>
+  <li><b>สาย Playful</b> เล่นจนเหนื่อยแล้วให้งีบได้ ไม่ทำให้เสียสาย</li>
+  <li><b>สาย Sleepy</b> กด Sleep ครั้งเดียวแล้วปล่อยนอนทั้งวัน ง่ายที่สุด</li>
+  <li><b>สาย Leader</b> คุยกับสัตว์เป็นระยะระหว่างวัน ใช้ประโยคลัดใน ☰ ได้</li>
+  <li><b>อยากสะสมครบทุกสาย:</b> ถึงร่าง 5 แล้วกด <b class="ui">Rebirth</b> เพื่อเริ่มสายใหม่ หนังสือยังเก็บสายที่ปลดล็อกไว้ หรือใช้ <b class="ui">COPY</b> คัดลอกไฟล์ไว้ลองหลายทาง</li>
+</ul>
+<h2>คำถามที่พบบ่อย</h2>
+<table>
+  <tr><th>คำถาม</th><th>คำตอบ</th></tr>
+  <tr><td>ทำไมกดไอเทมไม่ได้</td><td>อาจหมดวันแล้ว (กด NEXT DAY), สัตว์หลับอยู่ (ปลุกที่หมวด Rest), หรือกดเร็วเกินไป (รอ 1 วินาที)</td></tr>
+  <tr><td>ทำไมสัตว์ไม่เปลี่ยนร่าง</td><td>วันนั้นเลี้ยงหลายแนวปนกัน ไม่ตรงสายไหนชัด ดูสัดส่วนในฉากวิวัฒนาการหรือ Hint</td></tr>
+  <tr><td>ทำไมสัตว์ถอยร่าง</td><td>พลาดเป้าของสายติดกัน 2–3 วัน เลี้ยงกลับมาแนวเดิมเพื่อขึ้นร่างอีกครั้ง</td></tr>
+  <tr><td>ปิดเกมแล้วสัตว์จะหิวไหม</td><td>ไม่ เวลาเดินเฉพาะตอนอยู่หน้าเลี้ยงเท่านั้น</td></tr>
+  <tr><td>ไม่มีเสียง</td><td>เบราว์เซอร์จะเปิดเสียงหลังคลิกครั้งแรก และเช็ก Music / Sound ในเมนู</td></tr>
+  <tr><td>กล้องใช้ไม่ได้</td><td>ต้องอนุญาตกล้องในเบราว์เซอร์ และเปิดผ่านลิงก์ https หรือในเครื่อง (localhost)</td></tr>
+  <tr><td>ไมค์ในแชทใช้ไม่ได้</td><td>ใช้ได้ใน Chrome และ Edge และต้องอนุญาตไมโครโฟน</td></tr>
+</table>
+<p style="text-align:center; margin-top:24px;"><img src="../../assets/sprites/body/cat_royal_5.png" alt="" style="height:150px"> <img src="../../assets/sprites/body/dog_playful_5.png" alt="" style="height:150px"></p>
+<p style="text-align:center; color:var(--muted)">ขอให้สนุกกับการเลี้ยงนะ! 🐾</p>
+</section>
+
+</body>
+</html>
