@@ -16,9 +16,23 @@ window.PetGame = window.PetGame || {};
     { key: 'userSad',   words: ['ฉันเศร้า', 'เราเศร้า', 'เสียใจ', 'ร้องไห้', 'เครียด', 'ไม่สบายใจ', 'เหงาจัง', 'ฉันเหงา', 'ท้อ', 'ฉันเหนื่อย', 'วันนี้เหนื่อย', 'ไม่ไหวแล้ว'] },
     { key: 'userHappy', words: ['ฉันดีใจ', 'ดีใจจัง', 'มีความสุข', 'วันนี้ดีมาก', 'สอบผ่าน', 'ได้เกรด'] },
     { key: 'sorry',     words: ['ขอโทษ', 'โทษนะ', 'sorry'] },
+    { key: 'nevermind', words: ['ไม่เป็นไร', 'ช่างมัน', 'ไม่เป็นไรนะ'] },
+    // ---- ประโยคปฏิเสธ (ต้องมาก่อนคำหลัก เช่น "ไม่หิว" ต้องไม่ถูกนับเป็น "หิว") ----
+    { key: 'hungerNo',  words: ['ไม่หิว', 'อิ่มแล้ว', 'ยังไม่หิว'] },
+    { key: 'sleepNo',   words: ['ไม่ง่วง', 'ยังไม่นอน', 'อย่าเพิ่งนอน'] },
+    { key: 'playNo',    words: ['ไม่อยากเล่น', 'ไม่เล่น', 'ไม่เล่นแล้ว'] },
+    { key: 'dislike',   words: ['ไม่ชอบเธอ', 'ไม่รัก', 'ไม่ชอบเลย', 'ไม่ชอบแก', 'hateyou'] },
+    // ---- คำถามสั้น ๆ ที่พบบ่อย ----
+    { key: 'loveQ',     words: ['รักฉันไหม', 'รักเราไหม', 'ชอบฉันไหม', 'ชอบเราไหม', 'รักฉันมั้ย', 'รักเรามั้ย', 'ชอบฉันมั้ย', 'ชอบเรามั้ย', 'รักกันไหม', 'loveme'] },
+    { key: 'lonelyQ',   words: ['เหงาไหม', 'เหงามั้ย', 'เหงาป่ะ', 'เหงาปะ', 'เหงาหรอ', 'เหงาเหรอ'] },
+    { key: 'doing',     words: ['ทำอะไรอยู่', 'ทำไรอยู่', 'ทำอะไรอ่ะ', 'ทำไรอ่ะ', 'ทำอะไรเหรอ', 'ทำไร', 'whatareyoudoing'] },
+    { key: 'presence',  words: ['อยู่ไหม', 'อยู่มั้ย', 'อยู่ป่ะ', 'ยังอยู่', 'ได้ยินไหม', 'ได้ยินมั้ย', 'areyouthere'] },
+    { key: 'whereBeen', words: ['ไปไหนมา'] },
+    { key: 'wake',      words: ['ตื่นได้แล้ว', 'ตื่นยัง', 'ตื่นๆ', 'ตื่นเร็ว', 'ตื่นสิ', 'wakeup'] },
+    { key: 'laugh',     words: ['555', 'ฮ่าๆ', 'ฮาๆ', 'ขำจัง', 'ตลกดี', 'ขำมาก', 'haha', 'lol'] },
     // ---- คำถามคุยเล่นทั่วไป ----
-    { key: 'favFood',   words: ['ชอบกินอะไร', 'อาหารที่ชอบ', 'อาหารโปรด', 'ของโปรด', 'ขนมที่ชอบ', 'ชอบกิน'] },
-    { key: 'hobby',     words: ['ชอบทำอะไร', 'งานอดิเรก', 'ว่างๆทำอะไร', 'ว่างทำอะไร', 'ทำอะไรอยู่', 'ทำไรอยู่', 'ทำอะไรได้บ้าง'] },
+    { key: 'favFood',   words: ['ชอบกินอะไร', 'อาหารที่ชอบ', 'อาหารโปรด', 'ของโปรด', 'ขนมที่ชอบ', 'ชอบกิน', 'อยากกินอะไร'] },
+    { key: 'hobby',     words: ['ชอบทำอะไร', 'งานอดิเรก', 'ว่างๆทำอะไร', 'ว่างทำอะไร', 'ทำอะไรได้บ้าง'] },
     { key: 'color',     words: ['สีอะไร', 'สีที่ชอบ', 'ชอบสี', 'สีโปรด'] },
     { key: 'age',       words: ['กี่ขวบ', 'อายุ', 'กี่ปี'] },
     { key: 'time',      words: ['กี่โมง', 'เวลาเท่าไหร่', 'วันนี้วันอะไร', 'วันที่เท่าไหร่', 'วันที่เท่าไร', 'วันไหน'] },
@@ -37,18 +51,19 @@ window.PetGame = window.PetGame || {};
     // ---- การดูแล ----
     { key: 'advice',  words: ['ทำอะไรดี', 'ต้องการอะไร', 'อยากได้อะไร', 'อยากทำอะไร', 'ให้ช่วย', 'ช่วยอะไร'] },
     { key: 'status',  words: ['เป็นอะไร', 'เป็นไง', 'เป็นยังไง', 'สบายดี', 'รู้สึก', 'โอเคไหม', 'โอเคมั้ย', 'ไหวไหม', 'อารมณ์'] },
-    { key: 'hunger',  words: ['หิว', 'กิน', 'ข้าว', 'อาหาร', 'ขนม', 'อิ่ม'] },
-    { key: 'play',    words: ['เล่น', 'วิ่ง', 'บอล', 'เกม', 'เดินเล่น', 'สนุก'] },
-    { key: 'sleep',   words: ['นอน', 'ง่วง', 'พัก', 'เหนื่อย'] },
-    { key: 'bath',    words: ['อาบน้ำ', 'สะอาด', 'ป่วย', 'หมอ', 'เจ็บ', 'สกปรก', 'คัน'] },
+    { key: 'hunger',  words: ['หิว', 'กิน', 'ข้าว', 'อาหาร', 'ขนม', 'อิ่ม', 'hungry', 'food', 'eat'] },
+    { key: 'play',    words: ['เล่น', 'วิ่ง', 'บอล', 'เกม', 'เดินเล่น', 'สนุก', 'play'] },
+    { key: 'sleep',   words: ['นอน', 'ง่วง', 'พัก', 'เหนื่อย', 'sleep', 'tired'] },
+    { key: 'bath',    words: ['อาบน้ำ', 'สะอาด', 'ป่วย', 'หมอ', 'เจ็บ', 'สกปรก', 'คัน', 'bath'] },
     { key: 'evolve',  words: ['โต', 'วิวัฒ', 'ร่าง', 'เปลี่ยน', 'evolve'] },
     { key: 'name',    words: ['ชื่อ', 'เป็นใคร', 'คือใคร'] },
-    { key: 'love',    words: ['รัก', 'คิดถึง', 'กอด', 'หอม', 'love'] },
-    { key: 'praise',  words: ['น่ารัก', 'เก่ง', 'ดีมาก', 'หล่อ', 'สวย', 'เยี่ยม', 'cute', 'good'] },
-    { key: 'scold',   words: ['ดื้อ', 'ไม่ดี', 'โง่', 'เกลียด', 'น่ารำคาญ', 'ซน'] },
-    { key: 'greet',   words: ['สวัสดี', 'หวัดดี', 'ดีจ้า', 'ดีครับ', 'ดีค่ะ', 'hello', 'hi', 'ฮัลโหล'] },
-    { key: 'bye',     words: ['บาย', 'ลาก่อน', 'ไปก่อน', 'ฝันดี', 'bye'] },
+    { key: 'love',    words: ['รัก', 'คิดถึง', 'กอด', 'หอม', 'love', 'missyou'] },
+    { key: 'praise',  words: ['น่ารัก', 'เก่ง', 'ดีมาก', 'หล่อ', 'สวย', 'เยี่ยม', 'สุดยอด', 'cute', 'good', 'nice'] },
+    { key: 'scold',   words: ['ดื้อ', 'ไม่ดี', 'โง่', 'เกลียด', 'น่ารำคาญ', 'ซน', 'bad'] },
+    { key: 'greet',   words: ['สวัสดี', 'หวัดดี', 'ดีจ้า', 'ดีครับ', 'ดีค่ะ', 'อรุณสวัสดิ์', 'hello', 'hey', 'hi', 'ฮัลโหล', 'morning'] },
+    { key: 'bye',     words: ['บาย', 'ลาก่อน', 'ไปก่อน', 'ฝันดี', 'bye', 'goodnight'] },
     { key: 'thanks',  words: ['ขอบคุณ', 'ขอบใจ', 'thank'] },
+    { key: 'why',     words: ['ทำไม', 'why'] }, // อยู่ท้าย ๆ: "ทำไมหิว" ควรตอบเรื่องหิวก่อน
     // ---- คำตอบสั้น ๆ ----
     { key: 'yes',     words: ['ใช่', 'โอเค', 'ok', 'ได้เลย', 'จริง', 'อืม', 'ครับ', 'ค่ะ', 'จ้า'] },
     { key: 'no',      words: ['ไม่', 'ไม่เอา', 'ไม่ใช่', 'no'] }
@@ -88,6 +103,34 @@ window.PetGame = window.PetGame || {};
       royal: ['อยากเป็นราชาที่ทุกคนรัก'], leader: ['อยากเป็นผู้นำที่ทำให้ทุกคนมีความสุข']
     }
   };
+  // ---------- อีโมจิ: กลุ่ม -> เจตนาที่ใช้เมื่อพิมพ์อีโมจิมาพร้อมข้อความที่ไม่เข้าใจ ----------
+  const EMOJI_GROUPS = [
+    { key: 'love',     intent: 'love',     list: '❤️🧡💛💚💙💜🤍🖤💕💖💗💓💞💘😍🥰😘😻💋🫶' },
+    { key: 'laugh',    intent: 'laugh',    list: '😂🤣😆😄😁😀😹😅😸' },
+    { key: 'sad',      intent: 'userSad',  list: '😢😭🥺😞😔💔😿😥😓' },
+    { key: 'angry',    intent: 'scold',    list: '😡😠🤬👿😤💢' },
+    { key: 'food',     intent: 'hunger',   list: '🍖🍗🍔🍕🍟🐟🍣🍰🍪🍩🦴🥛🍎🍌🍓🥕🍚🍜🧀🍤🥩🍦🍫' },
+    { key: 'play',     intent: 'play',     list: '⚽🎾🏀🧸🎮🪀🎈🏃🏐⚾🥏' },
+    { key: 'sleep',    intent: 'sleep',    list: '😴💤🛏🥱🌙' },
+    { key: 'bath',     intent: 'bath',     list: '🛁🧼🫧🚿🧽' },
+    { key: 'praise',   intent: 'praise',   list: '👍👏💯🌟⭐🏆🥇✨' },
+    { key: 'greet',    intent: 'greet',    list: '👋🙋🤗' },
+    { key: 'surprise', intent: null,       list: '😮😱😲😯🤯😳' },
+    { key: 'cool',     intent: null,       list: '😎🤩🤘' },
+    { key: 'gift',     intent: null,       list: '🌸🌹🌷🌻💐🎁🍀' },
+    { key: 'party',    intent: null,       list: '🎉🥳🎂🎊🎈' }
+  ];
+  const SHORT_YES = ['ได้', 'เอา', 'ไป', 'ไปกัน', 'โอเค', 'ok', 'okay', 'yes', 'ใช่', 'อือ', 'อืม', 'จ้า', 'ครับ', 'ค่ะ', 'ดี', 'ดีเลย', 'ตกลง'];
+  const SHORT_NO = ['ไม่', 'ไม่เอา', 'ไม่ไป', 'ไม่ได้', 'no', 'ไม่ใช่', 'ยัง', 'ยังก่อน'];
+  const EMOJI_RE = /\p{Extended_Pictographic}/gu;
+  const emojisOf = (text) => (text.match(EMOJI_RE) || []);
+  const emojiGroup = (emojis) => {
+    for (const e of emojis) { const g = EMOJI_GROUPS.find((x) => x.list.includes(e)); if (g) return g; }
+    return null;
+  };
+  // ข้อความที่มีแต่อีโมจิ (ไม่มีตัวอักษร/ตัวเลข)
+  const emojiOnly = (text) => emojisOf(text).length > 0 && text.replace(EMOJI_RE, '').replace(/[\s‍️⃣]/g, '') === '';
+
   const lineKey = (pet) => (pet.line && pet.stage > 1 ? pet.line : 'baby');
   const byLine = (topic, pet) => pick(BY_LINE[topic][lineKey(pet)] || BY_LINE[topic].baby);
 
@@ -146,7 +189,7 @@ window.PetGame = window.PetGame || {};
       return words.join(' ') + (Math.random() < 0.5 ? '!' : '...') + ' ' + pick(ALIEN_ACT);
     }
     let t = text;
-    if (ps.me) t = t.replace(/เรา/g, ps.me);
+    if (ps.me) t = t.replace(/เรา(?!ะ)/g, ps.me); // ไม่แตะคำว่า "หัวเราะ"
     if (ps.you) t = t.replace(/เธอ/g, ps.you);
     if (ps.slow) t = t.replace(/ (?!ๆ)/g, '... ').replace(/[!！]/g, '...');
     if (t.startsWith('(') && t.endsWith(')')) return t; // ท่าทางล้วน ไม่ต้องเติมคำ
@@ -158,12 +201,21 @@ window.PetGame = window.PetGame || {};
     PERSONAS,
     voice,
 
+    // หาเจตนา: อีโมจิล้วน -> 'emoji:<กลุ่ม>' ; ข้อความ -> คำสำคัญ ; ไม่เข้าใจแต่มีอีโมจิ -> ใช้ความหมายของอีโมจิ
     detectIntent(text) {
-      const t = text.toLowerCase().replace(/\s+/g, '');
+      const emojis = emojisOf(text);
+      if (emojiOnly(text)) { const g = emojiGroup(emojis); return 'emoji:' + (g ? g.key : 'other'); }
+      const t = text.toLowerCase().replace(EMOJI_RE, '').replace(/\s+/g, '');
       if (/\d+[+\-x×*÷/]\d+/.test(t)) return 'math';
+      // คำตอบสั้น ๆ ทั้งประโยค (เช่น "ได้" / "ไม่เอา") — เช็คแบบตรงทั้งคำ เพราะคำเหล่านี้อยู่ในประโยคอื่นบ่อย
+      const bare = t.replace(/(ครับ|ค่ะ|คะ|จ้า|จ้ะ|นะ|น้า|สิ|ซิ|เลย)+$/, '');
+      if (SHORT_YES.includes(bare)) return 'yes';
+      if (SHORT_NO.includes(bare)) return 'no';
       for (const it of INTENTS) {
         if (it.words.some((w) => t.includes(w))) return it.key;
       }
+      const g = emojiGroup(emojis);
+      if (g && g.intent) return g.intent;
       return 'unknown';
     },
 
@@ -179,9 +231,13 @@ window.PetGame = window.PetGame || {};
     // ctx = { pet, emotion, advice }
     reply(text, ctx) {
       const intent = this.detectIntent(text);
+      // คำถามที่น้องเพิ่งถามไป (เช่น "ไปเล่นกันไหม?") -> ตอบ "ได้" / "ไม่" ให้ต่อเรื่องเดิม
+      const asked = this.lastAsk;
+      this.lastAsk = null;
+      const follow = asked && !ctx.pet.sleeping ? this.followUp(asked, intent) : null;
       // คำตอบพื้นฐาน -> ปรับตามบุคลิกของร่างปัจจุบัน
       const ps = personaOf(ctx.pet);
-      let msg = voice(this.replyFor(intent, ctx, text), ctx.pet);
+      let msg = voice(follow || this.replyFor(intent, ctx, text), ctx.pet);
       if (ps && ps.gibberish) return { intent, text: msg };
       // เติมเสียงร้อง (ร่างแรก = เสียงหมา/แมว, ร่างอื่น = เสียงตามบุคลิก)
       const sound = ps && ps.sound ? pick(ps.sound.concat([''])) : ctx.pet.species === 'dog' ? pick(['โฮ่ง!', 'บ๊อก ๆ', '']) : pick(['เมี้ยว~', 'เหมียว', '']);
@@ -189,16 +245,65 @@ window.PetGame = window.PetGame || {};
       return { intent, text: msg };
     },
 
-    replyFor(intent, { pet, emotion, advice }, text) {
+    // ต่อเรื่องจากคำถามที่น้องถามไปก่อนหน้า ; null = ไม่เกี่ยว ใช้คำตอบปกติ
+    followUp(asked, intent) {
+      const yes = intent === 'yes' || intent === 'play' || intent === 'emoji:praise' || intent === 'emoji:play';
+      const no = intent === 'no' || intent === 'playNo';
+      if (asked === 'play') {
+        if (yes) return pick(['เย้! กดปุ่ม Grooming แล้วเลือก Play เลย!', 'ไปกันเลย! เลือกของเล่นในเมนู Grooming นะ']);
+        if (no) return 'อ้าว... ไว้เล่นทีหลังก็ได้นะ';
+      }
+      if (asked === 'day') {
+        if (intent === 'userHappy' || intent === 'yes' || intent === 'unknown') return pick(['ดีจังเลย! เล่าให้ฟังอีกสิ', 'เย้! เธอวันดี เราก็วันดีด้วย']);
+        if (no || intent === 'userSad') return 'ไม่เป็นไรนะ พรุ่งนี้ต้องดีกว่านี้แน่ ๆ เราเป็นกำลังใจให้';
+      }
+      if (asked === 'story' && (intent === 'unknown' || intent === 'yes')) {
+        return pick(['ว้าว! แล้วยังไงต่ออ่ะ', 'จริงเหรอ! เราฟังอยู่นะ', 'เข้าใจแล้ว~ เธอเล่าเรื่องสนุกจัง']);
+      }
+      return null;
+    },
+
+    // ตอบอีโมจิล้วน (ตามกลุ่มอีโมจิ + สถานะของน้อง)
+    replyEmoji(group, { pet }, text) {
+      const s = pet.stats, bond = pet.bondLevel(), line = lineKey(pet), e = emojisOf(text)[0] || '';
+      switch (group) {
+        case 'love': return bond >= 3 ? pick(['เขินจัง! ส่งหัวใจกลับไปเลย 💕', 'ได้หัวใจแล้ว! เก็บไว้ตรงนี้นะ 💗', 'รักเธอเหมือนกัน! 🥰']) : pick(['ว้าว หัวใจเหรอ? ขอบคุณนะ 💕', 'เขินนิดนึง... 😳💕']);
+        case 'laugh': return pick(['ฮ่า ๆ ขำอะไรอ่ะ 😆 เล่าบ้างสิ', 'หัวเราะด้วยคน! 😂', 'เธอหัวเราะแล้วเราก็อารมณ์ดีเลย 😄']);
+        case 'sad': return pick(['อย่าเศร้านะ มากอดกัน 🤗', 'เป็นอะไรหรือเปล่า? เราอยู่ตรงนี้นะ 🥺']);
+        case 'angry': return pick(['งือ... โกรธเราเหรอ? 🥺', 'ใจเย็น ๆ นะ... (ซุกหน้า)']);
+        case 'food':
+          if (line === 'gluttony') return pick(['อาาา! ' + e + ' ขอเดี๋ยวนี้เลย!!', 'ของกิน!? ' + e + ' ส่งมาให้หมดเลย!']);
+          if (line === 'selfcare') return 'น่ากินนะ ' + e + ' แต่ต้องล้างมือก่อน!';
+          return s.fullness < 50 ? 'น่ากินจัง! ' + e + ' ให้เราเหรอ? (กด Grooming แล้วเลือก Feed นะ)' : 'น่าอร่อย ' + e + ' แต่ตอนนี้ยังอิ่มอยู่เลย 😋';
+        case 'play':
+          if (s.energy < 20) return 'อยากเล่น ' + e + ' แต่เหนื่อยแล้ว... ขอพักก่อนนะ 🥱';
+          this.lastAsk = 'play';
+          return line === 'playful' ? 'มาเลย! ' + e + ' ใครแพ้วิดพื้นสิบที!' : 'เล่น ๆ ๆ! ' + e + ' ไปเล่นกันไหม?';
+        case 'sleep': return s.energy < 40 ? 'ง่วงเหมือนกันเลย... 😴' : (line === 'sleepy' ? 'นอนเหรอ? ดีที่สุดเลย... 💤' : 'ยังไม่ง่วงเลย ยังมีแรงเล่นอีกเยอะ!');
+        case 'bath': return s.health < 60 ? 'อาบน้ำ! 🛁 ใช่เลย ตัวคันแล้ว' : (line === 'selfcare' ? 'อาบอีกรอบก็ได้นะ! ✨🫧' : 'ตัวยังหอมอยู่เลยนะ ✨');
+        case 'praise': return pick(['เย้! 👍 เราเก่งใช่ไหม', 'ขอบคุณที่ชมนะ! ✨', 'ปลื้มจัง~ 🥰']);
+        case 'greet': return pick(['หวัดดี! 👋', 'โบกมือกลับ 👋 ดีใจที่เจอนะ']);
+        case 'surprise': return pick(['ตกใจอะไรอ่ะ 😲', 'เอ๊ะ! มีอะไรเหรอ?']);
+        case 'cool': return pick(['เท่สุด ๆ 😎', 'ใส่แว่นดำด้วยกันไหม 😎']);
+        case 'gift': return pick(['ให้เราเหรอ? ' + e + ' ขอบคุณมากเลย!', 'สวยจัง! ' + e + ' เก็บไว้ข้างที่นอนนะ']);
+        case 'party': return pick(['ฉลองอะไรกัน! 🎉 เราขอร่วมด้วย', 'เย้! 🥳 ปาร์ตี้!']);
+        default: return pick([e + ' ' + e + '! (ทำตาม)', 'อันนี้แปลว่าอะไรอ่ะ? ' + e, e + ' น่ารักดีนะ']);
+      }
+    },
+
+    replyFor(intent, ctxAll, text) {
+      const { pet, emotion, advice } = ctxAll;
       const e = emotion.key;
       const s = pet.stats;
       const bond = pet.bondLevel();
       const dog = pet.species === 'dog';
 
-      // กำลังหลับ: ตอบแบบละเมอ ยกเว้นบอกลา
+      // กำลังหลับ: ตอบแบบละเมอ ยกเว้นบอกลา / ปลุก
       if (pet.sleeping && intent !== 'bye') {
+        if (intent === 'wake') return pick(['งื้อ... อีกห้านาทีนะ... (กดปุ่ม Rest เพื่อปลุก)', 'Zzz... ยังไม่อยากตื่น...']);
         return pick(['Zzz... งื้อ...', 'ฮืม... ขนม... Zzz', '(พลิกตัวแล้วหลับต่อ)']);
       }
+      if (intent.startsWith('emoji:')) return this.replyEmoji(intent.slice(6), ctxAll, text || '');
 
       // ความต้องการเร่งด่วนจะแทรกในบทสนทนาเสมอ
       const urgent = {
@@ -261,12 +366,47 @@ window.PetGame = window.PetGame || {};
           return pick(['งือ... ขอโทษนะ', '(หูลู่ หางตก)', 'ไม่ได้ตั้งใจนะ...']);
         case 'greet':
           if (urgent[e]) return 'สวัสดี! ' + urgent[e];
-          return bond >= 3 ? 'สวัสดี! คิดถึงเธอจังเลย!' : 'สวัสดีจ้า!';
+          this.lastAsk = 'day';
+          return bond >= 3 ? 'สวัสดี! คิดถึงเธอจังเลย! วันนี้เป็นไงบ้าง?' : 'สวัสดีจ้า! วันนี้เป็นไงบ้าง?';
         case 'bye':
           if (pet.sleeping) return 'Zzz... ฝันดี...';
           return e === 'lonely' || e === 'sad' ? 'จะไปแล้วเหรอ... รีบกลับมานะ' : 'บ๊ายบาย กลับมาเล่นด้วยกันอีกนะ!';
         case 'thanks':
           return 'ไม่เป็นไร เราต่างหากที่ต้องขอบคุณที่ดูแลเรา';
+
+        // ---------- ประโยคปฏิเสธ / คำถามสั้น ๆ ----------
+        case 'nevermind':
+          return pick(['โอเค ไม่เป็นไรเลย', 'ได้เลย ไม่คิดมากนะ']);
+        case 'hungerNo':
+          return s.fullness < 30 ? 'จริงเหรอ? แต่เราหิวนะ... ท้องร้องแล้วเนี่ย' : 'โอเค งั้นไว้ค่อยกินนะ';
+        case 'sleepNo':
+          return s.energy < 25 ? 'แต่เราง่วงมากแล้วนะ... (หาว)' : 'ดีเลย! งั้นอยู่เล่นด้วยกันต่อ';
+        case 'playNo':
+          return 'อ้าว... งั้นนั่งเล่นด้วยกันเฉย ๆ ก็ได้';
+        case 'dislike':
+          return bond >= 3 ? 'งือ... ล้อเล่นใช่ไหม? (ตาแดง ๆ)' : '(หูลู่ หางตก) ขอโทษนะ ถ้าเราทำอะไรไม่ดี';
+        case 'loveQ':
+          if (bond >= 4) return pick(['รักที่สุดเลย! ถามแบบนี้เขินนะ', 'รักสิ! เธอคือคนสำคัญที่สุดของเรา']);
+          if (bond >= 2) return pick(['ชอบสิ! อยู่ด้วยแล้วสบายใจ', 'ชอบนะ~ คุยกันบ่อย ๆ เดี๋ยวก็รักเลย']);
+          return 'อืม... เริ่มชอบแล้วล่ะ คุยกันบ่อย ๆ นะ';
+        case 'lonelyQ':
+          return e === 'lonely' || pet.secondsSinceInteraction() > 45 ? 'เหงานิดหน่อย... อยู่เล่นด้วยกันนาน ๆ นะ' : 'ไม่เหงาเลย เพราะเธออยู่ตรงนี้ไง';
+        case 'doing':
+          if (e === 'hungry') return 'นั่งรอข้าวอยู่... หิวจัง';
+          if (e === 'tired') return 'นอนเอกเขนกอยู่ ง่วง ๆ';
+          if (e === 'sick') return 'นั่งเกาตัวอยู่... คันไปหมด';
+          if (e === 'happy') return pick(['เดินเล่นในสวนอยู่ อากาศดีมาก!', 'วิ่งเล่นอยู่! อารมณ์ดีสุด ๆ']);
+          return pick(['นั่งดูผีเสื้ออยู่', 'คุยกับเธออยู่ไง!', 'เดินสำรวจสวนอยู่']);
+        case 'presence':
+          return pick(['อยู่สิ! อยู่ตรงนี้ตลอดเลย', 'อยู่นี่ ๆ! เรียกได้ตลอดนะ']);
+        case 'whereBeen':
+          return 'ไม่ได้ไปไหนเลย อยู่ในสวนรอเธอตลอด';
+        case 'wake':
+          return 'ตื่นตั้งนานแล้ว! พร้อมเล่นเลย';
+        case 'laugh':
+          return pick(['ฮ่า ๆ ขำไปด้วยเลย!', 'หัวเราะอะไรอ่ะ เล่าให้ฟังบ้างสิ', 'เธอหัวเราะแล้วเราก็มีความสุขไปด้วย']);
+        case 'why':
+          return pick(['เพราะ... เราก็ไม่รู้เหมือนกัน (เอียงคอ)', 'เพราะมันเป็นแบบนั้นแหละ!', 'คำถามยากจัง ขอคิดก่อนนะ... (คิดไม่ออก)']);
 
         // ---------- คุยเล่นทั่วไป ----------
         case 'userSad':
@@ -313,7 +453,8 @@ window.PetGame = window.PetGame || {};
         case 'animal':
           return dog ? pick(['หมาก็ดี แมวก็ดี แต่เราชอบเธอที่สุด', 'แมวบางตัวก็ใจดีนะ ไม่ใช่ทุกตัวที่ข่วน']) : pick(['หมาเสียงดังไปหน่อย แต่ก็น่ารักดี', 'แมวดีที่สุดอยู่แล้ว! (เชิดหน้า)']);
         case 'bored':
-          return pick(['งั้นมาเล่นกันไหม! กดปุ่ม Grooming แล้วเลือก Play เลย', 'เบื่อเหรอ? ลองถามเราว่า "เล่ามุกหน่อย" สิ']);
+          this.lastAsk = 'play';
+          return pick(['งั้นมาเล่นกันไหม?', 'เบื่อเหรอ? ไปเล่นด้วยกันไหม? หรือจะให้เราเล่ามุกก็ได้นะ']);
         case 'math': {
           const c = this.calc(text || '');
           if (!c || c.r === null) return 'โจทย์นี้ยากไป... เรานับนิ้วไม่พอ';
@@ -325,16 +466,34 @@ window.PetGame = window.PetGame || {};
         case 'no':
           return pick(['อ้าว... ก็ได้', 'ไม่เป็นไร ไว้คราวหน้านะ']);
 
-        // ---------- ไม่เข้าใจ (ศัพท์ยาก / พิมพ์ผิด) ----------
-        default:
+        // ---------- ไม่ตรงหัวข้อไหน: ตอบให้เข้ากับรูปประโยค (คำถาม / เล่าเรื่อง) ----------
+        default: {
           if (urgent[e]) return urgent[e];
+          const raw = (text || '').trim();
+          const t = raw.replace(/\s+/g, '');
+          // อ่านไม่ออกเลย (เช่น พิมพ์มั่ว ไม่มีตัวอักษรไทย/อังกฤษ)
+          if (!/[ก-๙a-z]/i.test(t)) return pick(['หืม? อ่านไม่ออกเลย พิมพ์ใหม่อีกทีได้ไหม', dog ? '(กระดิกหางแบบงง ๆ)' : '(กระพริบตาช้า ๆ แบบงง ๆ)']);
+          // คำถาม -> ตอบแบบเดา ๆ ตามนิสัย
+          if (/(ไหม|มั้ย|หรอ|เหรอ|ป่ะ|ปะ|รึเปล่า|หรือเปล่า|ไหน|อะไร|ยังไง|เมื่อไหร่|เท่าไหร่|ใคร|\?)/.test(t)) {
+            return pick([
+              'อืม... น่าจะใช่นะ? (เอียงคอคิด)',
+              'ไม่แน่ใจเลย แต่ถ้าเธอว่าใช่ เราก็ว่าใช่!',
+              'คำถามนี้ยากไปนิด ถามเรื่องที่เรารู้ได้ไหม เช่น "หิวไหม" หรือ "ชอบกินอะไร"',
+              dog ? 'โฮ่ง? (เอียงหัวคิดหนักมาก)' : 'เมี้ยว? (คิดอยู่... แต่ขี้เกียจคิด)'
+            ]);
+          }
+          // เล่าเรื่องสั้น ๆ -> ทวนคำแล้วชวนเล่าต่อ
+          if (raw.length <= 20) {
+            this.lastAsk = 'story';
+            return pick([`"${raw}" เหรอ? ฟังดูน่าสนใจ เล่าต่ออีกสิ`, `อ๋อ ${raw}! แล้วยังไงต่อ?`]);
+          }
           return pick([
-            'เอ๊ะ... คำนี้ยากไปสำหรับเรา ไม่เข้าใจเลย (เอียงคอ)',
-            'หืม? พิมพ์ผิดหรือเปล่า เราอ่านไม่ออก',
-            'ไม่ค่อยเข้าใจ แต่ชอบเวลาเธอคุยด้วยนะ',
-            dog ? '(กระดิกหางแบบงง ๆ)' : '(กระพริบตาช้า ๆ แบบไม่เข้าใจ)',
-            'ลองพูดง่าย ๆ อีกทีได้ไหม? เช่น "ชอบกินอะไร" หรือ "เล่ามุกหน่อย"'
+            'อ๋อ แบบนี้นี่เอง!',
+            'เข้าใจแล้ว~ ขอบคุณที่เล่าให้ฟังนะ',
+            dog ? '(กระดิกหางฟังอย่างตั้งใจ)' : '(พยักหน้าช้า ๆ ฟังอยู่นะ)',
+            'ฟังอยู่นะ! เธอเล่าเก่งจัง'
           ]);
+        }
       }
     }
   };

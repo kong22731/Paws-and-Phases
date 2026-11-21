@@ -270,6 +270,59 @@ PetGame.Data = {
     }
   },
 
+  // ---------- ข้อมูลเพิ่มเติมใน Evolution Book (หน้า 2: Description) ----------
+  // personality = นิสัย/วิธีพูดในแชท [ร่าง 2-3, ร่าง 4-5] ; loves = ของที่ชอบ ; habit = ท่าทางในสวน ; grow = วิธีเลี้ยงให้โตในสายนี้
+  BOOK_INFO: {
+    baby: {
+      personality: 'Curious and cheerful. Talks like a little kid and barks or meows a lot.',
+      loves: 'Bone treats, warm milk and chasing its own tail.',
+      habit: 'Trots around the garden with quick little steps.',
+      grow: 'Every route starts here. Raise it in one clear style for a whole day, then press NEXT DAY to pick a route.'
+    },
+    sleepy: {
+      personality: ['Yawns between words and drifts off mid-sentence.', 'Speaks like an ancient sky dragon — calm and echoing — then returns to its slumber.'],
+      loves: 'Warm milk, soft clouds and very long naps.',
+      habit: 'Floats slowly around the garden, leaving little 💤 behind.',
+      grow: 'Mostly rest: at least half of the day\'s care is Rest, with little feeding, playing or grooming. The Sleep button counts the most.'
+    },
+    gluttony: {
+      personality: ['Always talking about snacks, drooling a little.', 'A booming glutton lord who demands feasts — "Bring me food at once!"'],
+      loves: 'Everything edible, especially second helpings.',
+      habit: 'Waddles slowly and wobbles when it stands still.',
+      grow: 'Mostly feeding: Feed is the biggest part of feeding, playing and grooming. Resting is fine; keep play and grooming low.'
+    },
+    neglect: {
+      personality: ['Quiet and lonely; speaks in faint, slow whispers.', 'Speaks only in strange alien sounds and twitches its antennae.'],
+      loves: 'Anyone who stays with it, even for a moment.',
+      habit: 'Shivers in place; later it hovers like a ghost.',
+      grow: 'Barely any care at all for the whole day. Just let time pass.'
+    },
+    selfcare: {
+      personality: ['Cheerful and squeaky clean; sniffs itself proudly.', 'A graceful soap sovereign who refuses to be touched by dirty hands.'],
+      loves: 'Bubbles, fresh fruit and a sparkling coat.',
+      habit: 'Sways gently, surrounded by floating bubbles 🫧.',
+      grow: 'Mostly grooming: Care is the biggest part of feeding, playing and grooming. Resting is fine; keep feeding and play low.'
+    },
+    playful: {
+      personality: ['Energetic and loud; always ready to race you.', 'A big-brother bodybuilder who talks about protein, reps and gains.'],
+      loves: 'Running, lifting weights and chicken breast.',
+      habit: 'Dashes around the fastest of all and flexes when it stops 💪.',
+      grow: 'Mostly playing: Play is the biggest part of feeding, playing and grooming. Nap when it gets tired; keep feeding and grooming low.'
+    },
+    royal: {
+      personality: ['Polite and elegant, with a touch of pride.', 'Speaks like a monarch and expects every word to be remembered 👑.'],
+      loves: 'Afternoon tea, flower gardens and golden things.',
+      habit: 'Walks slowly and gracefully, sparkling now and then ✨.',
+      grow: 'Perfect balance: feed, play, groom and rest every day so each one is 10–45% of the care.'
+    },
+    leader: {
+      personality: ['A careful planner who takes notes on everything.', 'Gives speeches to "my fellow citizens" and announces new policies 🎩.'],
+      loves: 'Meetings, good plans and a hot cup of coffee.',
+      habit: 'Nods thoughtfully while walking with a clipboard 📋.',
+      grow: 'Perfect balance like Royal, and chat with your pet at least 8 times every day (4 times for the early stages).'
+    }
+  },
+
   // ชื่อสายเดิม (เซฟเก่า) -> สายใหม่
   LEGACY_LINES: { beauty: 'selfcare', strong: 'gluttony', balanced: 'royal' }
 };

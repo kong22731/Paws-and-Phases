@@ -94,48 +94,101 @@ class CodexScene extends Phaser.Scene {
     // ร่างที่ 1 (Newborn) + ร่าง 2-5 ของสายนี้
     const forms = [{ key: `${sp}_baby`, stage: 1, name: D.FORM_NAMES[sp].baby }];
     for (let st = 2; st <= D.MAX_STAGE; st++) forms.push({ key: `${sp}_${line}_${st}`, stage: st, name: D.FORM_NAMES[sp][line][st - 1] });
-    index = Phaser.Math.Clamp(index, 0, forms.length - 1);
+    // เลื่อนวนได้: ร่าง 1 กดซ้าย -> ร่าง 5 ; ร่าง 5 กดขวา -> ร่าง 1
+    const N = forms.length, wrap = (i) => ((i % N) + N) % N;
+    index = wrap(index);
     const f = forms[index];
     const has = (k) => this.pet.unlocked.includes(k);
+    const go = (d) => { PetGame.Sound.play('select'); this.showRoute(line, wrap(index + d)); };
 
     // การ์ดด้านหลัง (ร่างก่อนหน้า / ถัดไป)
     [[-1, 152], [1, 292]].forEach(([d, x]) => {
-      const nf = forms[index + d];
+      const nf = forms[wrap(index + d)];
       UI.card(this, x, 130, 207, 256, C.olive);
-      if (nf) this.formImage(nf, x + 103.5, 258, 185, 230, has(nf.key), 0.6);
+      this.formImage(nf, x + 103.5, 258, 185, 230, has(nf.key), 0.6);
       UI.box(this, x, 130, 207, 256, { fill: 0x000000, alpha: 0.3, radius: 10 });
     });
     // การ์ดหลัก
     UI.card(this, 202, 109, 247, 296, C.olive);
     this.formImage(f, 325.5, 257, 225, 272, has(f.key), 1);
 
-    if (index > 0) UI.imageButton(this, 117, 244, 'prev_big', 100, 100, () => this.showRoute(line, index - 1));
-    if (index < forms.length - 1) UI.imageButton(this, 534, 247, 'next_big', 100, 100, () => this.showRoute(line, index + 1));
+    UI.imageButton(this, 117, 244, 'prev_big', 100, 100, () => go(-1));
+    UI.imageButton(this, 534, 247, 'next_big', 100, 100, () => go(1));
 
     UI.box(this, 105, 437, 441, 60, { fill: C.oliveMid, stroke: C.olive, strokeW: 5, radius: 20 });
     UI.text(this, 325.5, 467, `${L.label} Route`, 32, '#ffffff').setOrigin(0.5);
+    // จุดบอกร่าง 1-5 (จุดที่ดูอยู่ = สีเข้ม)
+    forms.forEach((_, i) => this.add.circle(285.5 + i * 20, 517, i === index ? 6 : 4.5, i === index ? C.olive : C.oliveMid));
 
     // คำอธิบาย
     this.add.rectangle(592.5, 299.5, 7, 431, C.olive);
     UI.title(this, 749, 118, 'Description', 48, '#ffffff', C.oliveCss).setOrigin(0.5);
     UI.card(this, 619, 158, 260, 45, C.oliveDark, { fill: C.olive });
-    UI.text(this, 635, 180.5, `Stage: ${f.stage} / ${D.MAX_STAGE}`, 20, '#ffffff').setOrigin(0, 0.5);
+    UI.text(this, 635, 180.5, `Stage ${f.stage} / ${D.MAX_STAGE} · ${D.STAGE_LABELS[f.stage - 1]}`, 19, '#ffffff').setOrigin(0, 0.5);
     UI.card(this, 619, 209, 260, 45, C.oliveDark, { fill: C.olive });
     const known = has(f.key);
-    UI.text(this, 635, 231.5, `Called: ${known ? f.name : '???'}`, f.name.length > 16 ? 15 : 20, '#ffffff', {
+    UI.text(this, 635, 231.5, `Called: ${known ? f.name : '???'}`, known && f.name.length > 16 ? 15 : 20, '#ffffff', {
       wordWrap: { width: 236, useAdvancedWrap: true }
     }).setOrigin(0, 0.5);
     UI.card(this, 619, 265, 260, 250, C.olive);
-    // คำอธิบายร่าง (petData.js -> BABY_DESC / LINE_GUIDE.forms)
-    const formDesc = f.stage === 1 ? D.BABY_DESC : D.LINE_GUIDE[line].forms[f.stage - 2];
-    const desc = known
-      ? `${formDesc}${this.pet.formKey() === f.key ? '\n\n★ Your pet is in this form now!' : ''}`
-      : 'Not discovered yet.';
-    UI.text(this, 637, 282, desc, 16, '#3f4122', { wordWrap: { width: 226, useAdvancedWrap: true }, lineSpacing: 3 });
+    this.descPanel(this.formInfo(line, f, known));
 
-    // ปัด/กดลูกศรคีย์บอร์ด
-    this.input.keyboard.once('keydown-LEFT', () => index > 0 && this.showRoute(line, index - 1));
-    this.input.keyboard.once('keydown-RIGHT', () => index < forms.length - 1 && this.showRoute(line, index + 1));
+    // กดลูกศรคีย์บอร์ด
+    this.input.keyboard.once('keydown-LEFT', () => go(-1));
+    this.input.keyboard.once('keydown-RIGHT', () => go(1));
+  }
+
+  // ข้อมูลในกล่อง Description: [[หัวข้อ, เนื้อหา], ...] (petData.js -> BABY_DESC / LINE_GUIDE.forms / BOOK_INFO)
+  formInfo(line, f, known) {
+    const D = PetGame.Data;
+    const info = f.stage === 1 ? D.BOOK_INFO.baby : D.BOOK_INFO[line];
+    if (!known) return [['Not discovered yet', 'Reach this form to learn more about it.'], ['How it grows', info.grow]];
+    const about = f.stage === 1 ? D.BABY_DESC : D.LINE_GUIDE[line].forms[f.stage - 2];
+    const personality = Array.isArray(info.personality) ? info.personality[f.stage >= 4 ? 1 : 0] : info.personality;
+    const rows = [];
+    if (this.pet.formKey() === f.key) rows.push(['★ Your pet is in this form now!', '']);
+    rows.push(['About', about], ['Personality', personality], ['Loves', info.loves], ['Habit', info.habit], ['How it grows', info.grow]);
+    return rows;
+  }
+
+  // กล่องคำอธิบายที่เลื่อนขึ้นลงได้ (ล้อเมาส์ / ลาก) เมื่อข้อความยาวเกินกล่อง
+  descPanel(rows) {
+    const UI = PetGame.UI, C = PetGame.Data.COLORS;
+    const box = { x: 632, y: 276, w: 228, h: 228 };
+    const c = this.add.container(0, 0);
+    let y = box.y;
+    rows.forEach(([head, body]) => {
+      const h = UI.text(this, box.x, y, head, 15, C.oliveCss, { fontStyle: 'bold', wordWrap: { width: box.w, useAdvancedWrap: true } });
+      c.add(h);
+      y += h.height + 1;
+      if (body) {
+        const b = UI.text(this, box.x, y, body, 14, '#3f4122', { wordWrap: { width: box.w, useAdvancedWrap: true }, lineSpacing: 2 });
+        c.add(b);
+        y += b.height;
+      }
+      y += 9;
+    });
+    const maskG = this.make.graphics({ add: false }).fillRect(box.x - 4, box.y - 4, box.w + 14, box.h + 8);
+    c.setMask(maskG.createGeometryMask());
+    const max = Math.max(0, y - box.y - box.h);
+    if (!max) return;
+    const thumb = this.add.graphics();
+    let offset = 0;
+    const apply = () => {
+      c.y = -offset;
+      const th = box.h * box.h / (box.h + max);
+      thumb.clear().fillStyle(C.oliveMid, 1).fillRoundedRect(box.x + box.w + 6, box.y + (box.h - th) * offset / max, 5, th, 2.5);
+    };
+    apply();
+    const over = (p) => p.x > 619 && p.x < 879 && p.y > 265 && p.y < 515;
+    this.input.on('wheel', (p, o, dx, dy) => { if (over(p)) { offset = Phaser.Math.Clamp(offset + dy * 0.5, 0, max); apply(); } });
+    let dragY = null;
+    this.input.on('pointerdown', (p) => { dragY = over(p) ? p.y : null; });
+    this.input.on('pointermove', (p) => {
+      if (dragY === null || !p.isDown) return;
+      offset = Phaser.Math.Clamp(offset - (p.y - dragY), 0, max); dragY = p.y; apply();
+    });
+    this.input.on('pointerup', () => { dragY = null; });
   }
 
   // แบนเนอร์มุมมน 705x97 (ทึบ 70% บนพื้นขาว) — สร้างครั้งเดียวแล้วใช้ซ้ำ
