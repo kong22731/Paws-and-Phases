@@ -119,7 +119,10 @@ window.PetGame = window.PetGame || {};
         s.energy = clamp(s.energy + k.sleepEnergyGain * dt);
         s.fullness = clamp(s.fullness - k.sleepFullnessDecay * dt);
         // งีบ/นอนที่สั่งเอง = แต้มพักผ่อนสะสมตามเวลา (หมดแรงหลับเองไม่นับ)
-        if ((this.sleepMode === 'nap' || this.sleepMode === 'night') && !this.isDayOver()) this.careWindow.rest += D.REST_PER_SEC * dt;
+        // นอนยาว (Sleep) ได้แต้มมากกว่างีบ ให้การนอนทั้งวันของสาย Sleepy ไม่ถูกนับเป็น Neglect
+        if ((this.sleepMode === 'nap' || this.sleepMode === 'night') && !this.isDayOver()) {
+          this.careWindow.rest += (this.sleepMode === 'night' ? D.REST_PER_SEC_NIGHT : D.REST_PER_SEC) * dt;
+        }
         // งีบ: ตื่นเมื่อครบเวลา ; หมดแรงหลับเอง: ตื่นเมื่อพลังเต็ม ; นอนกลางคืน: หลับจนกด NEXT DAY
         if (this.sleepMode === 'nap' && this.gameTime >= this.napUntil) this.wake();
         else if (this.sleepMode !== 'nap' && this.sleepMode !== 'night' && s.energy >= 100) this.wake();
@@ -246,7 +249,7 @@ window.PetGame = window.PetGame || {};
             this.sleepMode = 'night';
             message = 'Good night! Sleeping until you wake it up... Zzz';
           }
-          if (before.energy > 85) careValue = 1;
+          if (before.energy > 85) careValue = 3; // ยังไม่ง่วงก็ยังนับเป็นการพัก (สาย Sleepy ที่งีบบ่อย)
         }
       } else {
         if (item.care === 'play' && s.energy < 15) {
