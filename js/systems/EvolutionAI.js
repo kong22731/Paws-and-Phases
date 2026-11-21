@@ -6,8 +6,8 @@
  *
  * เงื่อนไขแต่ละสาย (ตรวจตามลำดับนี้ เจอสายแรกที่ผ่านก็ใช้สายนั้น):
  *   👽 neglect  : แทบไม่ได้ดูแลเลย (แต้มรวมน้อยกว่า neglectMaxPoints)
- *   🎩 leader   : สมดุล 4 ด้าน (ทุกด้าน 15-35%) + คุยกัน ≥ leaderChats ครั้งในวันนั้น
- *   👑 royal    : สมดุล 4 ด้าน (ทุกด้าน 15-35%)
+ *   🎩 leader   : สมดุล 4 ด้าน (ทุกด้าน 12-45%) + คุยกัน ≥ leaderChats ครั้งในวันนั้น
+ *   👑 royal    : สมดุล 4 ด้าน (ทุกด้าน 12-45%)
  *   💤 sleepy   : Rest ≥ 50% และ Feed / Play / Care แต่ละอย่าง ≤ 20%
  *   🐷 gluttony : Feed สูงสุดและ ≥ 45% ; Play, Care ≤ 20%
  *   🧼 selfcare : Care สูงสุดและ ≥ 45% ; Play, Feed ≤ 20%
@@ -26,8 +26,8 @@ window.PetGame = window.PetGame || {};
     focusShare: 0.45,     // ด้านที่เน้นต้องมีสัดส่วนอย่างน้อยเท่านี้
     sleepyShare: 0.5,     // สาย Sleepy: Rest อย่างน้อยเท่านี้
     lowShare: 0.2,        // ด้านที่ "ต่ำ" ต้องไม่เกินเท่านี้
-    balancedMin: 0.15,    // สมดุล: ทุกด้านอยู่ระหว่าง 15% ...
-    balancedMax: 0.35,    //        ... ถึง 35%
+    balancedMin: 0.12,    // สมดุล: ทุกด้านอยู่ระหว่าง 12% ...
+    balancedMax: 0.45,    //        ... ถึง 45% (ต่ำกว่า sleepyShare 50% จึงไม่ทับสาย Sleepy)
     leaderChats: 8        // สายผู้นำ: คุยกันอย่างน้อยกี่ครั้งต่อวัน
   };
   // เกณฑ์แบบง่าย สำหรับร่าง 1 -> 2 และ 2 -> 3 (ใช้เมื่อร่างปัจจุบัน ≤ EASY_UP_TO_STAGE)
@@ -37,8 +37,8 @@ window.PetGame = window.PetGame || {};
     focusShare: 0.35,
     sleepyShare: 0.4,
     lowShare: 0.3,
-    balancedMin: 0.1,
-    balancedMax: 0.4,
+    balancedMin: 0.08,
+    balancedMax: 0.45,
     leaderChats: 4
   };
   const EASY_UP_TO_STAGE = 2;
