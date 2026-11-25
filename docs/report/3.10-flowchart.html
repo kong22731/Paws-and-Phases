@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="th"><head><meta charset="utf-8"><title>3.10 ผังงานการทำงานของโปรแกรม</title><link rel="stylesheet" href="style.css">
+<style>.fc { width: 100%; max-height: 222mm; } .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 9.4pt; margin: 2px 0 4px; } .legend span { display: inline-flex; align-items: center; gap: 5px; } .legend i { display: inline-block; width: 26px; height: 14px; border: 2px solid; border-radius: 3px; }</style></head>
+<body>
+<div class="head"><span class="no">3.10</span><h1>ผังงาน (Flowchart) การทำงานของโปรแกรม<small>จัดทำด้วย draw.io · ไฟล์ต้นฉบับ: docs/report/3.10-flowchart.drawio</small></h1></div>
+<div class="legend">
+  <span><i style="background:#7a7d47;border-color:#5d5f33;border-radius:8px"></i>เริ่ม / จบ</span>
+  <span><i style="background:#fff;border-color:#7a7d47"></i>การทำงาน</span>
+  <span><i style="background:#f3f4e3;border-color:#b2b579;transform:skewX(-15deg)"></i>ผู้เล่นป้อนข้อมูล</span>
+  <span><i style="background:#e6f8fa;border-color:#20a6b5;transform:rotate(45deg) scale(.7)"></i>ตัดสินใจ</span>
+  <span><i style="background:#fdebe6;border-color:#e0533a"></i><b>ส่วนที่ AI ทำงาน</b></span>
+</div>
+<img class="fc" src="flowchart.svg" alt="">
+
+<div class="page"></div>
+<h2>อธิบายผังงาน</h2>
+<ol>
+  <li><b>เปิดเกม</b> → BootScene โหลดภาพ เสียง และไอเทมทั้งหมด → แสดงหน้าปก</li>
+  <li><b>เลือก START</b> เพื่อเลือกหมา/แมวและตั้งชื่อ (เกมบันทึกลงไฟล์ว่างให้อัตโนมัติ) หรือ <b>Continue</b> เพื่อโหลดไฟล์เซฟเดิม</li>
+  <li>แสดง <b>Day N</b> แล้วเข้า <b>หน้าเลี้ยง</b></li>
+  <li><b>ลูปหลัก (ทุกเฟรม):</b> เวลาเดิน ค่าสถานะลดลง และทุก 0.5 วินาที <b>Emotion AI</b> กับ <b>Care Advisor</b> คิดอารมณ์และคำแนะนำ</li>
+  <li><b>ผู้เล่นทำอะไร:</b>
+    <ul>
+      <li><b>ใช้ไอเทม</b> → ค่าสถานะเปลี่ยน และเก็บแต้มการดูแลของวัน</li>
+      <li><b>คุยแชท</b> → <b>Chatbot</b> จับเจตนาแล้วตอบตามบุคลิกของร่าง</li>
+      <li><b>เปิดเมนู</b> / หนังสือ / Hint (เลือก Main Menu เพื่อจบเกม)</li>
+    </ul>
+  </li>
+  <li><b>หมดวันหรือยัง?</b> ถ้ายัง กลับไปลูปหลัก ถ้าหมดแล้ว ผู้เล่นกด <b>NEXT DAY</b></li>
+  <li><b>Evolution AI</b> วิเคราะห์สัดส่วนการดูแลทั้งวัน แล้วตัดสินผล:
+    <ul>
+      <li><b>ขึ้นร่าง / ถอยร่าง</b> → ฉากวิวัฒนาการพร้อมเหตุผลจาก AI</li>
+      <li><b>คงร่าง / เตือน</b> → แจ้งผลในแชท</li>
+    </ul>
+  </li>
+  <li>บันทึกอัตโนมัติ แล้วเริ่ม <b>วันถัดไป</b> (กลับไปขั้นที่ 3)</li>
+</ol>
+<div class="note"><b>เปิดแก้ไขใน draw.io:</b> เปิด <b>app.diagrams.net</b> (หรือโปรแกรม draw.io) → File → Open from → Device → เลือกไฟล์ <code>3.10-flowchart.drawio</code> แก้ไขกล่องและเส้นได้ และ Export เป็น PNG / PDF ได้จากเมนู File → Export as</div>
+</body></html>
